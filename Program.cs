@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HORIZON1.Data;
 using HORIZON1.Models;
+using HORIZON1.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,17 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
 })
 .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+
+builder.Services.AddScoped<HORIZON1.Factory.ReminderFactory>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthentication(); 
