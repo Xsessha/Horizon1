@@ -24,9 +24,16 @@ namespace HORIZON1.Data
                 .WithMany()
                 .HasForeignKey(e => e.CategoryId);
 
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .IsRequired(false);
+
+            // System categories (UserId is null)
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Робота", ColorHex = "#FF5733" },
-                new Category { Id = 2, Name = "Навчання", ColorHex = "#33FF57" }
+                new Category { Id = 1, Name = "Робота", ColorHex = "#FF5733", UserId = null },
+                new Category { Id = 2, Name = "Навчання", ColorHex = "#33FF57", UserId = null }
             );
         }
     }

@@ -24,12 +24,12 @@ namespace HORIZON1.Controllers
 
             var user = new HORIZON1.Models.User // Явно вказуємо твій клас
             { 
-                UserName = model.Email, 
-                Email = model.Email, 
-                FullName = model.FullName 
+                UserName = model.Email ?? "", 
+                Email = model.Email ?? "", 
+                FullName = model.FullName ?? ""
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password ?? "");
 
             if (result.Succeeded)
             {
