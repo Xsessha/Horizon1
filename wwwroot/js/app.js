@@ -2,10 +2,28 @@ const API_URL = '/api/events';
 let currentDate = new Date();
 
 document.addEventListener('DOMContentLoaded', () => {
+
     checkAuth();
     renderCalendar();
-    
+
     document.getElementById('eventForm').addEventListener('submit', createEvent);
+
+    // Додаємо обробники для стрілок календаря
+    document.getElementById('prevMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    });
+    document.getElementById('nextMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    });
+
+    // Додаємо logout глобально
+    window.logout = function() {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userName');
+        window.location.href = 'login.html';
+    }
 });
 
 function checkAuth() {
