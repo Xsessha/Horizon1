@@ -33,12 +33,7 @@ namespace HORIZON1.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Categories");
 
@@ -81,15 +76,6 @@ namespace HORIZON1.Migrations
                     b.Property<bool>("IsRecurring")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("RecurrenceEndDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("RecurrenceInterval")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RecurrenceType")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 
@@ -122,18 +108,12 @@ namespace HORIZON1.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsSent")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ReminderTime")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -339,15 +319,6 @@ namespace HORIZON1.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("HORIZON1.Models.Category", b =>
-                {
-                    b.HasOne("HORIZON1.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HORIZON1.Models.Event", b =>

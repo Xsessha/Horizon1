@@ -32,8 +32,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<HORIZON1.Factory.ReminderFactory>();
 
-builder.Services.AddHostedService<HORIZON1.Services.ReminderService>();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
