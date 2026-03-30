@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon - Планувальник</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>HORIZON</h1>
+        <div id="userInfo">
+            <span id="userName">Користувач</span>
+            <button onclick="logout()">Вихід</button>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <aside class="sidebar">
+            <h3>Категорії</h3>
+            <ul id="categoryList">
+                <li><span class="dot" style="background:#FF5733"></span> Робота</li>
+                <li><span class="dot" style="background:#33FF57"></span> Навчання</li>
+            </ul>
+        </aside>
+
+        <section class="calendar-container">
+            <div class="calendar-header">
+                <button id="prevMonth"><</button>
+                <h2 id="currentMonthYear">Березень 2026</h2>
+                <button id="nextMonth">></button>
+            </div>
+            <div id="calendarGrid" class="calendar-grid">
+                <div class="day-header">Пн</div><div class="day-header">Вт</div>
+                <div class="day-header">Ср</div><div class="day-header">Чт</div>
+                <div class="day-header">Пт</div><div class="day-header">Сб</div>
+                <div class="day-header">Нд</div>
+                </div>
+        </section>
+    </main>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <h3>Нова подія</h3>
+            <form id="eventForm">
+                <input type="text" id="eventTitle" placeholder="Назва (мін. 3 символи)" required minlength="3" maxlength="100">
+                <textarea id="eventDesc" placeholder="Опис"></textarea>
+                <label>Початок:</label>
+                <input type="datetime-local" id="startTime" required>
+                <label>Кінець:</label>
+                <input type="datetime-local" id="endTime" required>
+                <select id="categoryId">
+                    <option value="1">Робота</option>
+                    <option value="2">Навчання</option>
+                </select>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-save">Зберегти</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Скасувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

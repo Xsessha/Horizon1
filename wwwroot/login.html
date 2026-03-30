@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon - Вхід</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border: 3px solid #333; /* Flat Design Border */
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-buttons button {
+            flex: 1;
+            padding: 10px;
+            cursor: pointer;
+            border: 2px solid #333;
+            background: #eee;
+            font-weight: bold;
+        }
+        .tab-buttons button.active {
+            background: #2c3e50;
+            color: white;
+        }
+        .hidden { display: none; }
+        .error-msg { color: red; margin-bottom: 10px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2 style="text-align: center;">HORIZON</h2>
+        
+        <div class="tab-buttons">
+            <button id="btnTabLogin" class="active" onclick="showTab('login')">Вхід</button>
+            <button id="btnTabRegister" onclick="showTab('register')">Реєстрація</button>
+        </div>
+
+        <form id="loginForm">
+            <div id="loginError" class="error-msg hidden"></div>
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Пароль" required>
+            <button type="submit" class="btn-save" style="width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; cursor: pointer;">Увійти</button>
+        </form>
+
+        <form id="registerForm" class="hidden">
+            <div id="registerError" class="error-msg hidden"></div>
+            <input type="text" id="regFullName" placeholder="Повне ім'я" required>
+            <input type="email" id="regEmail" placeholder="Email" required>
+            <input type="password" id="regPassword" placeholder="Пароль (мін. 6 симв.)" required minlength="6">
+            <button type="submit" class="btn-save" style="width: 100%; padding: 12px; background: #27ae60; color: white; border: none; cursor: pointer;">Зареєструватися</button>
+        </form>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
