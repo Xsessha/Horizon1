@@ -15,7 +15,6 @@ namespace HORIZON1.Controllers
         private readonly IEventRepository _repository;
         private readonly ReminderFactory _reminderFactory;
         
-        private readonly string _testUserId = "test-user-id-123";
 
         public EventsController(IEventRepository repository, ReminderFactory reminderFactory)
         {
@@ -23,24 +22,31 @@ namespace HORIZON1.Controllers
             _reminderFactory = reminderFactory;
         }
 
-        private string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        private string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Event>>> GetAllEvents()
         {
-            var events = await _repository.GetAllAsync(_testUserId);
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+
+            var events = await _repository.GetAllAsync(CurrentUserId);
             return Ok(events);
         }
 
         [HttpGet("month/{year}/{month}")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEventsByMonth(int year, int month)
         {
-            var events = await _repository.GetEventsByMonthAsync(year, month, _testUserId);
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+
+            var events = await _repository.GetEventsByMonthAsync(year, month, CurrentUserId);
             return Ok(events);
         }
 
         [HttpPost]
         public async Task<ActionResult<Event>> CreateEvent(Event newEvent, [FromQuery] string reminderType = "email")
         {
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized("Користувач не авторизований.");
+
             newEvent.UserId = CurrentUserId;
 
             if (newEvent.EndTime <= newEvent.StartTime)
@@ -57,9 +63,11 @@ namespace HORIZON1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            var result = await _repository.DeleteAsync(id, _testUserId);
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+
+            var result = await _repository.DeleteAsync(id, CurrentUserId);
             if (!result)
-                return NotFound("Подію не знайдено.");
+                return NotFound("Подію не знайдено або у вас немає прав на її видалення.");
 
             return Ok("Подію успішно видалено.");
         }

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HORIZON1.Models
 {
     public class Event
     {
-        [Key] // Явно вказуємо, що це первинний ключ
+        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Назва події обов'язкова")]
@@ -23,7 +24,7 @@ namespace HORIZON1.Models
         
         public bool IsDeleted { get; set; } = false;
 
-        [Required]
+        [ValidateNever]
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
 
