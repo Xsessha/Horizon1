@@ -11,7 +11,6 @@ namespace HORIZON1.Repository
         Task<bool> DeleteAsync(int id, string userId);
 
         Task<IEnumerable<Event>> GetEventsByMonthAsync(int year, int month, string userId);
-        Task<IEnumerable<Event>> GetEventsByDateRangeAsync(DateTime start, DateTime end, string userId);
         Task<IEnumerable<Event>> GetEventsByCategoryAsync(int categoryId, string userId);
     }
 }

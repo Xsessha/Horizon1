@@ -21,9 +21,6 @@ namespace HORIZON1.Models
         public DateTime EndTime { get; set; }
 
         public bool IsRecurring { get; set; }
-        public RecurrenceType RecurrenceType { get; set; } = RecurrenceType.None;
-        public int? RecurrenceInterval { get; set; } // For custom intervals
-        public DateTime? RecurrenceEndDate { get; set; } // When the recurrence ends
         
         public bool IsDeleted { get; set; } = false;
 
@@ -36,15 +33,5 @@ namespace HORIZON1.Models
         public Category? Category { get; set; }
 
         public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
-    }
-
-    public enum RecurrenceType
-    {
-        None,
-        Daily,
-        Weekly,
-        Monthly,
-        Yearly,
-        Custom
     }
 }

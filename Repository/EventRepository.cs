@@ -69,18 +69,6 @@ namespace HORIZON1.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetEventsByDateRangeAsync(DateTime start, DateTime end, string userId)
-        {
-            return await _context.Events
-                .Include(e => e.Category)
-                .Where(e => e.UserId == userId 
-                         && ((e.StartTime >= start && e.StartTime <= end) 
-                             || (e.EndTime >= start && e.EndTime <= end)
-                             || (e.StartTime <= start && e.EndTime >= end)))
-                .OrderBy(e => e.StartTime)
-                .ToListAsync();
-        }
-
         public async Task<IEnumerable<Event>> GetEventsByCategoryAsync(int categoryId, string userId)
         {
             return await _context.Events
