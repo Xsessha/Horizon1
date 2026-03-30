@@ -21,12 +21,17 @@ namespace HORIZON1.Data
 
             modelBuilder.Entity<Event>()
                 .HasOne(e => e.Category)
-                .WithMany()
-                .HasForeignKey(e => e.CategoryId);
+                .WithMany(c => c.Events)
+                .HasForeignKey(e => e.CategoryId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Робота", ColorHex = "#FF5733" },
-                new Category { Id = 2, Name = "Навчання", ColorHex = "#33FF57" }
+                new Category { Id = 2, Name = "Навчання", ColorHex = "#33FF57" },
+                new Category { Id = 3, Name = "Спорт", ColorHex = "#3357FF" },
+                new Category { Id = 4, Name = "Особисте", ColorHex = "#F1C40F" },
+                new Category { Id = 5, Name = "Здоров'я", ColorHex = "#9B59B6" }
             );
         }
     }

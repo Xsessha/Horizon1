@@ -28,9 +28,18 @@ namespace HORIZON1.Models
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
 
-        [Required]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category? Category { get; set; }
+
+        public bool IsTemporaryCategory { get; set; } = false;
+        [StringLength(50)]
+        public string? TemporaryCategoryName { get; set; }
+        [StringLength(7)]
+        public string? TemporaryCategoryColor { get; set; }
+
+        public RecurrencePattern RecurrencePattern { get; set; } = RecurrencePattern.None;
+        [StringLength(50)]
+        public string? RecurrenceDays { get; set; } // CSV, наприклад "Monday,Wednesday"
 
         public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
     }
