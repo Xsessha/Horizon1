@@ -14,6 +14,9 @@ namespace HORIZON1.Models
         [StringLength(7)]
         public string ColorHex { get; set; } = "#FFFFFF";
 
+        public string? UserId { get; set; } // null for system categories, userId for user-created categories
+        public User? User { get; set; }
+
         public ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }
