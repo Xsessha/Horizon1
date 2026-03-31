@@ -6,7 +6,6 @@ using HORIZON1.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. ДОДАЄМО НАЛАШТУВАННЯ CORS (дозволяємо фронтенду робити запити)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -33,22 +32,21 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<HORIZON1.Factory.ReminderFactory>();
 
+builder.Services.AddHostedService<HORIZON1.Services.ReminderService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 2. ПОРЯДОК МАЄ ЗНАЧЕННЯ: спочатку статика, потім CORS, потім контролери
-app.UseDefaultFiles(); // Дозволяє відкривати index.html за замовчуванням
-app.UseStaticFiles();  // Дозволяє читати папку wwwroot (твої HTML/CSS/JS)
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// ПРИМУСОВО вмикаємо CORS
 app.UseCors("AllowAll");
 
-// app.UseHttpsRedirection(); // Можеш тимчасово закоментувати, якщо тестуєш на http
 app.UseAuthentication(); 
 app.UseAuthorization();
 

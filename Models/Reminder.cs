@@ -13,7 +13,17 @@ namespace HORIZON1.Models
         [Required]
         public DateTime ReminderTime { get; set; }
 
+        public ReminderType Type { get; set; } = ReminderType.Email;
+        public bool IsSent { get; set; } = false;
+
         public int EventId { get; set; }
         public Event? Event { get; set; }
+    }
+
+    public enum ReminderType
+    {
+        Email,
+        SMS,
+        Push
     }
 }
