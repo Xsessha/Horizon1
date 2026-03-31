@@ -2,11 +2,16 @@ const API_URL = '/api/events';
 const CATEGORY_API_URL = '/api/categories';
 let currentDate = new Date();
 
+function getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return token ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } : { 'Content-Type': 'application/json' };
+}
+
 async function loadCategories() {
     try {
         const userToken = localStorage.getItem('token');
         const response = await fetch(CATEGORY_API_URL, {
-            headers: userToken ? { 'Authorization': `Bearer ${userToken}` } : {}
+            headers: getAuthHeaders()
         });
         const categories = await response.json();
 
@@ -90,8 +95,24 @@ async function renderCalendar() {
     const month = currentDate.getMonth();
     monthYearLabel.innerText = `${new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(currentDate)}`;
 
-    const response = await fetch(`${API_URL}/month/${year}/${month + 1}`);
-    const events = await response.json();
+    let events = [];
+    try {
+        const response = await fetch(`${API_URL}/month/${year}/${month + 1}`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+            if (response.status === 401) {
+                alert('Сесія закінчилася, будь ласка, увійдіть знову');
+                window.location.href = 'login.html';
+                return;
+            }
+            throw new Error(`Сервер повернув ${response.status}`);
+        }
+        events = await response.json();
+    } catch (error) {
+        console.error('Помилка завантаження подій:', error);
+        events = [];
+    }
 
     const startDate = new Date(year, month, 1);
     const dayOfWeek = (startDate.getDay() + 6) % 7; // 0=Пн
@@ -112,14 +133,19 @@ async function renderCalendar() {
 
         const dayEvents = events.filter(e => {
             const start = new Date(e.startTime);
-            const end = new Date(e.endTime);
-            if (e.recurrencePattern) {
+            const end = e.endTime ? new Date(e.endTime) : new Date(start);
+
+            if (e.recurrencePattern && e.recurrencePattern !== 0) {
                 // recurring events уже розгорнуті з бекенду в окремі дні
                 return start.getFullYear() === date.getFullYear() &&
                     start.getMonth() === date.getMonth() &&
                     start.getDate() === date.getDate();
             }
-            return date >= start && date <= end;
+
+            const eventStartDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            const eventEndDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+            return date >= eventStartDate && date <= eventEndDate;
         });
 
         dayEvents.forEach(e => {
@@ -155,7 +181,7 @@ async function deleteEventFromServer(eventId, eventHtmlElement) {
     try {
         const response = await fetch(`${API_URL}/${eventId}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
+            headers: getAuthHeaders()
         });
 
         if (response.ok) {
@@ -170,21 +196,49 @@ async function deleteEventFromServer(eventId, eventHtmlElement) {
     }
 }
 
+function formatLocalDateTime(date) {
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 function openModal(day) {
+    const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+
+    const startDateTime = new Date(selectedDate);
+    startDateTime.setHours(9, 0, 0, 0);
+    const endDateTime = new Date(startDateTime);
+    endDateTime.setHours(10, 0, 0, 0);
+
+    startTimeInput.value = formatLocalDateTime(startDateTime);
+    endTimeInput.value = formatLocalDateTime(endDateTime);
+
+    document.getElementById('eventTitle').value = '';
+    document.getElementById('eventDesc').value = '';
+    document.getElementById('recurrencePattern').value = '0';
+    document.getElementById('categoryId').value = '1';
+    document.getElementById('customCategoryWrapper').style.display = 'none';
+    document.getElementById('customCategoryName').value = '';
+    document.getElementById('customCategoryColor').value = '#ff9900';
+
     document.getElementById('eventModal').style.display = 'block';
 }
 
 function closeModal() {
     document.getElementById('eventModal').style.display = 'none';
+    document.getElementById('eventForm').reset();
 }
 
 async function createEvent(e) {
     e.preventDefault();
     
-    const start = new Date(document.getElementById('startTime').value);
-    const end = new Date(document.getElementById('endTime').value);
+    const startValue = document.getElementById('startTime').value;
+    const endValue = document.getElementById('endTime').value;
+    const start = new Date(startValue);
+    const end = new Date(endValue);
 
-    if (end <= start) {
+    if (endValue && end <= start) {
         alert("Час завершення має бути пізнішим за початок!");
         return;
     }
@@ -201,8 +255,8 @@ async function createEvent(e) {
     const newEvent = {
         title: document.getElementById('eventTitle').value,
         description: document.getElementById('eventDesc').value,
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
+        startTime: startValue,
+        endTime: endValue,
         isTemporaryCategory: isOtherCategory,
         temporaryCategoryName: isOtherCategory ? customCategoryName : null,
         temporaryCategoryColor: isOtherCategory ? document.getElementById('customCategoryColor').value : null,
@@ -212,7 +266,7 @@ async function createEvent(e) {
 
     const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(newEvent)
     });
 

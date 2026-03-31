@@ -66,6 +66,7 @@ namespace HORIZON1.Repository
             return await _context.Events
                 .Include(e => e.Category)
                 .Where(e => e.UserId == userId
+                         && !e.IsDeleted
                          && e.StartTime <= monthEnd
                          && e.EndTime >= monthStart)
                 .OrderBy(e => e.StartTime)

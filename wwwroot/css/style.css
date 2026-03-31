@@ -135,9 +135,7 @@ footer {
     margin-bottom: 2px;
     color: white;
     border-radius: 0; /* Flat style */
-    
-    /* НОВЕ: Необхідно для правильного позиціювання хрестика всередині події */
-    position: relative; 
+    position: relative;
 }
 
 /* НОВЕ: Стилі для кнопки видалення (хрестика) */

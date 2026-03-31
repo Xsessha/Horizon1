@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace HORIZON1.Models
 {
@@ -14,6 +15,7 @@ namespace HORIZON1.Models
         [StringLength(7)]
         public string ColorHex { get; set; } = "#FFFFFF";
 
+        [JsonIgnore]
         public ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }

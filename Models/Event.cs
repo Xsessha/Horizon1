@@ -41,6 +41,7 @@ namespace HORIZON1.Models
         [StringLength(50)]
         public string? RecurrenceDays { get; set; } // CSV, наприклад "Monday,Wednesday"
 
+        [ValidateNever]
         public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
     }
 }
