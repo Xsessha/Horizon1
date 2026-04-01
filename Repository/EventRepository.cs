@@ -60,23 +60,15 @@ namespace HORIZON1.Repository
 
         public async Task<IEnumerable<Event>> GetEventsByMonthAsync(int year, int month, string userId)
         {
-            return await _context.Events
-                .Include(e => e.Category)
-                .Where(e => e.UserId == userId 
-                         && e.StartTime.Year == year 
-                         && e.StartTime.Month == month)
-                .OrderBy(e => e.StartTime)
-                .ToListAsync();
-        }
+            DateTime monthStart = new DateTime(year, month, 1);
+            DateTime monthEnd = monthStart.AddMonths(1).AddTicks(-1);
 
-        public async Task<IEnumerable<Event>> GetEventsByDateRangeAsync(DateTime start, DateTime end, string userId)
-        {
             return await _context.Events
                 .Include(e => e.Category)
-                .Where(e => e.UserId == userId 
-                         && ((e.StartTime >= start && e.StartTime <= end) 
-                             || (e.EndTime >= start && e.EndTime <= end)
-                             || (e.StartTime <= start && e.EndTime >= end)))
+                .Where(e => e.UserId == userId
+                         && !e.IsDeleted
+                         && e.StartTime <= monthEnd
+                         && e.EndTime >= monthStart)
                 .OrderBy(e => e.StartTime)
                 .ToListAsync();
         }

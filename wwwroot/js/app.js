@@ -1,25 +1,58 @@
 const API_URL = '/api/events';
+const CATEGORY_API_URL = '/api/categories';
 let currentDate = new Date();
 
-document.addEventListener('DOMContentLoaded', () => {
+function getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return token ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } : { 'Content-Type': 'application/json' };
+}
 
+async function loadCategories() {
+    try {
+        const userToken = localStorage.getItem('token');
+        const response = await fetch(CATEGORY_API_URL, {
+            headers: getAuthHeaders()
+        });
+        const categories = await response.json();
+
+        const categorySelect = document.getElementById('categoryId');
+        const categoryList = document.getElementById('categoryList');
+
+        categorySelect.innerHTML = '';
+        categoryList.innerHTML = '';
+
+        categories.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name;
+            categorySelect.appendChild(opt);
+
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="dot" style="background:${c.colorHex}"></span> ${c.name}`;
+            categoryList.appendChild(li);
+        });
+
+        const customOpt = document.createElement('option');
+        customOpt.value = 'other';
+        customOpt.textContent = 'Інша';
+        categorySelect.appendChild(customOpt);
+    } catch (err) {
+        console.warn('Не вдалося завантажити категорії, використано дефолтні.', err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     loadCategories();
     renderCalendar();
 
-    // Встановлюємо ім'я користувача в header
-    const userName = localStorage.getItem('userName');
-    if (userName) {
-        const userNameSpan = document.getElementById('userName');
-        if (userNameSpan) userNameSpan.textContent = userName;
-    }
-
     document.getElementById('eventForm').addEventListener('submit', createEvent);
-    document.getElementById('addCategoryBtn').addEventListener('click', openCategoryModal);
-    document.getElementById('categoryForm').addEventListener('submit', createCategory);
-    document.getElementById('isRecurring').addEventListener('change', toggleRecurrenceOptions);
 
-    // Додаємо обробники для стрілок календаря
+    document.getElementById('categoryId').addEventListener('change', (ev) => {
+        const isOther = ev.target.value === 'other';
+        document.getElementById('customCategoryWrapper').style.display = isOther ? 'block' : 'none';
+    });
+
     document.getElementById('prevMonth').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
@@ -29,24 +62,31 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCalendar();
     });
 
-    // Додаємо logout глобально
     window.logout = function() {
         localStorage.removeItem('userId');
         localStorage.removeItem('userName');
+        localStorage.removeItem('token');
         window.location.href = 'login.html';
     }
 });
 
 function checkAuth() {
     const userId = localStorage.getItem('userId');
-    if (!userId) window.location.href = 'login.html';
+    if (!userId) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const userName = localStorage.getItem('userName') || 'Користувач';
+    const userNameSpan = document.getElementById('userName');
+    if (userNameSpan) {
+        userNameSpan.textContent = userName;
+    }
 }
 
 async function renderCalendar() {
     const grid = document.getElementById('calendarGrid');
     const monthYearLabel = document.getElementById('currentMonthYear');
-    
-    // Очистка старих днів (залишаємо тільки заголовки Пн-Нд)
     const headers = grid.querySelectorAll('.day-header');
     grid.innerHTML = '';
     headers.forEach(h => grid.appendChild(h));
@@ -55,71 +95,84 @@ async function renderCalendar() {
     const month = currentDate.getMonth();
     monthYearLabel.innerText = `${new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(currentDate)}`;
 
-    // Отримання подій з API (Вимога №4)
-    const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, month + 1, 0);
-    const response = await fetch(`${API_URL}/daterange?start=${startOfMonth.toISOString()}&end=${endOfMonth.toISOString()}`);
-    const events = await response.json();
-
-    // --- Синхронізація з реальним календарем (початок тижня — понеділок) ---
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month + 1, 0);
-    // 0 - неділя, 1 - понеділок ...
-    let startDay = firstDayOfMonth.getDay();
-    if (startDay === 0) startDay = 7; // щоб понеділок був першим
-    const startDate = new Date(firstDayOfMonth);
-    startDate.setDate(startDate.getDate() - (startDay - 1));
-
-    // Генерація днів (6 тижнів для повного відображення)
-    for (let week = 0; week < 6; week++) {
-        for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-            const currentDay = new Date(startDate);
-            currentDay.setDate(startDate.getDate() + (week * 7) + dayOfWeek);
-
-            const daySquare = document.createElement('div');
-            daySquare.className = 'calendar-day';
-            if (currentDay.getMonth() !== month) {
-                daySquare.classList.add('other-month');
+    let events = [];
+    try {
+        const response = await fetch(`${API_URL}/month/${year}/${month + 1}`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+            if (response.status === 401) {
+                alert('Сесія закінчилася, будь ласка, увійдіть знову');
+                window.location.href = 'login.html';
+                return;
             }
-            daySquare.innerHTML = `<span>${currentDay.getDate()}</span>`;
-            daySquare.onclick = () => openModal(currentDay);
-
-            // Відображення подій (Вимога №6)
-            const dayEvents = events.filter(e => {
-                const eventStart = new Date(e.startTime);
-                const eventEnd = new Date(e.endTime);
-                return eventStart.toDateString() === currentDay.toDateString() ||
-                       (eventStart <= currentDay && eventEnd >= currentDay);
-            });
-
-            dayEvents.forEach(e => {
-                const evEl = document.createElement('div');
-                evEl.className = 'event-item';
-                // Пастельний колір для категорії (якщо є)
-                let pastel = '#b6e2d3';
-                if (e.category && e.category.colorHex) {
-                    // Можна зробити мапу кольорів для різних категорій
-                    pastel = e.category.colorHex;
-                }
-                evEl.style.backgroundColor = pastel;
-                evEl.innerText = e.title;
-
-                // --- Хрестик ---
-                const deleteBtn = document.createElement('span');
-                deleteBtn.className = 'delete-event-btn';
-                deleteBtn.innerHTML = '&times;';
-                deleteBtn.onclick = async (eventClick) => {
-                    eventClick.stopPropagation(); 
-                    const isConfirmed = confirm(`Ви дійсно хочете видалити подію "${e.title}"?`);
-                    if (isConfirmed) {
-                        await deleteEventFromServer(e.id, evEl);
-                    }
-                };
-                evEl.appendChild(deleteBtn);
-                daySquare.appendChild(evEl);
-            });
-            grid.appendChild(daySquare);
+            throw new Error(`Сервер повернув ${response.status}`);
         }
+        events = await response.json();
+    } catch (error) {
+        console.error('Помилка завантаження подій:', error);
+        events = [];
+    }
+
+    const startDate = new Date(year, month, 1);
+    const dayOfWeek = (startDate.getDay() + 6) % 7; // 0=Пн
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < dayOfWeek; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'calendar-day empty';
+        grid.appendChild(empty);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const daySquare = document.createElement('div');
+        daySquare.className = 'calendar-day';
+        daySquare.innerHTML = `<span>${day}</span>`;
+        daySquare.onclick = () => openModal(day);
+
+        const dayEvents = events.filter(e => {
+            const start = new Date(e.startTime);
+            const end = e.endTime ? new Date(e.endTime) : new Date(start);
+
+            if (e.recurrencePattern && e.recurrencePattern !== 0) {
+                // recurring events уже розгорнуті з бекенду в окремі дні
+                return start.getFullYear() === date.getFullYear() &&
+                    start.getMonth() === date.getMonth() &&
+                    start.getDate() === date.getDate();
+            }
+
+            const eventStartDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            const eventEndDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+            return date >= eventStartDate && date <= eventEndDate;
+        });
+
+        dayEvents.forEach(e => {
+            const evEl = document.createElement('div');
+            evEl.className = 'event-item';
+            const categoryColor = e.isTemporaryCategory ? e.temporaryCategoryColor || '#999' : e.category?.colorHex || '#999';
+            evEl.style.backgroundColor = categoryColor;
+            const categoryLabel = e.isTemporaryCategory ? ` (${e.temporaryCategoryName || 'Тимчасова'})` : '';
+            evEl.innerText = e.title + categoryLabel;
+
+            const deleteBtn = document.createElement('span');
+            deleteBtn.className = 'delete-event-btn';
+            deleteBtn.innerHTML = '&times;';
+
+            deleteBtn.onclick = async (eventClick) => {
+                eventClick.stopPropagation();
+                const isConfirmed = confirm(`Ви дійсно хочете видалити подію "${e.title}"?`);
+                if (isConfirmed) {
+                    await deleteEventFromServer(e.id, evEl);
+                }
+            };
+
+            evEl.appendChild(deleteBtn);
+            daySquare.appendChild(evEl);
+        });
+
+        grid.appendChild(daySquare);
     }
 }
 
@@ -128,7 +181,7 @@ async function deleteEventFromServer(eventId, eventHtmlElement) {
     try {
         const response = await fetch(`${API_URL}/${eventId}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
+            headers: getAuthHeaders()
         });
 
         if (response.ok) {
@@ -143,156 +196,85 @@ async function deleteEventFromServer(eventId, eventHtmlElement) {
     }
 }
 
-async function loadCategories() {
-    try {
-        const response = await fetch('/api/categories');
-        const categories = await response.json();
-        
-        const categorySelect = document.getElementById('categoryId');
-        categorySelect.innerHTML = '';
-        
-        categories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            categorySelect.appendChild(option);
-        });
-        
-        // Update sidebar
-        const categoryList = document.getElementById('categoryList');
-        categoryList.innerHTML = '';
-        
-        categories.forEach(cat => {
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="dot" style="background:${cat.colorHex}"></span> ${cat.name}`;
-            categoryList.appendChild(li);
-        });
-        
-    } catch (error) {
-        console.error('Error loading categories:', error);
-    }
+function formatLocalDateTime(date) {
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-function toggleRecurrenceOptions() {
-    const isRecurring = document.getElementById('isRecurring').checked;
-    const recurrenceType = document.getElementById('recurrenceType');
-    const recurrenceEndDate = document.getElementById('recurrenceEndDate');
-    
-    recurrenceType.disabled = !isRecurring;
-    recurrenceEndDate.disabled = !isRecurring;
-}
+function openModal(day) {
+    const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
 
-function openCategoryModal() {
-    document.getElementById('categoryModal').classList.add('active');
-}
+    const startDateTime = new Date(selectedDate);
+    startDateTime.setHours(9, 0, 0, 0);
+    const endDateTime = new Date(startDateTime);
+    endDateTime.setHours(10, 0, 0, 0);
 
-function closeCategoryModal() {
-    document.getElementById('categoryModal').classList.remove('active');
-}
+    startTimeInput.value = formatLocalDateTime(startDateTime);
+    endTimeInput.value = formatLocalDateTime(endDateTime);
 
-async function createCategory(e) {
-    e.preventDefault();
-    
-    const category = {
-        name: document.getElementById('categoryName').value,
-        colorHex: document.getElementById('categoryColor').value
-    };
-    
-    try {
-        const response = await fetch('/api/categories', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(category)
-        });
-        
-        if (response.ok) {
-            closeCategoryModal();
-            loadCategories();
-            document.getElementById('categoryForm').reset();
-        } else {
-            alert('Помилка створення категорії');
-        }
-    } catch (error) {
-        console.error('Error creating category:', error);
-        alert('Помилка створення категорії');
-    }
+    document.getElementById('eventTitle').value = '';
+    document.getElementById('eventDesc').value = '';
+    document.getElementById('recurrencePattern').value = '0';
+    document.getElementById('categoryId').value = '1';
+    document.getElementById('customCategoryWrapper').style.display = 'none';
+    document.getElementById('customCategoryName').value = '';
+    document.getElementById('customCategoryColor').value = '#ff9900';
+
+    document.getElementById('eventModal').style.display = 'block';
 }
 
 function closeModal() {
     document.getElementById('eventModal').style.display = 'none';
+    document.getElementById('eventForm').reset();
 }
 
 async function createEvent(e) {
     e.preventDefault();
     
-    const start = new Date(document.getElementById('startTime').value);
+    const startValue = document.getElementById('startTime').value;
     const endValue = document.getElementById('endTime').value;
-    let end = null;
-    if (endValue && !isNaN(Date.parse(endValue))) {
-        end = new Date(endValue);
-        if (end <= start) {
-            alert("Час завершення має бути пізнішим за початок!");
-            return;
-        }
-    }
-    
-    // Перевірка назви
-    const titleValue = document.getElementById('eventTitle').value.trim();
-    if (titleValue.length < 3 || titleValue.length > 100) {
-        alert("Назва має бути від 3 до 100 символів");
+    const start = new Date(startValue);
+    const end = new Date(endValue);
+
+    if (endValue && end <= start) {
+        alert("Час завершення має бути пізнішим за початок!");
         return;
     }
-    
-    const isRecurring = document.getElementById('isRecurring').checked;
-    const enableReminder = document.getElementById('enableReminder').checked;
-    
-    // Формуємо об'єкт події
-    const newEvent = {
-        Title: titleValue,
-        Description: document.getElementById('eventDesc').value,
-        StartTime: start.toISOString(),
-        CategoryId: parseInt(document.getElementById('categoryId').value),
-        IsRecurring: isRecurring,
-        RecurrenceType: isRecurring ? parseInt(document.getElementById('recurrenceType').value) : 0,
-        RecurrenceEndDate: isRecurring ? document.getElementById('recurrenceEndDate').value : null
-    };
-    // Додаємо EndTime тільки якщо воно є
-    if (end) {
-        newEvent.EndTime = end.toISOString();
-    }
-    
-        url += '?' + params.toString();
+
+    const selectedCategory = document.getElementById('categoryId').value;
+    const isOtherCategory = selectedCategory === 'other';
+    const customCategoryName = document.getElementById('customCategoryName').value.trim();
+
+    if (isOtherCategory && !customCategoryName) {
+        alert('Будь ласка, вкажіть назву для власної категорії.');
+        return;
     }
 
-    const response = await fetch(url, {
+    const newEvent = {
+        title: document.getElementById('eventTitle').value,
+        description: document.getElementById('eventDesc').value,
+        startTime: startValue,
+        endTime: endValue,
+        isTemporaryCategory: isOtherCategory,
+        temporaryCategoryName: isOtherCategory ? customCategoryName : null,
+        temporaryCategoryColor: isOtherCategory ? document.getElementById('customCategoryColor').value : null,
+        categoryId: isOtherCategory ? null : parseInt(selectedCategory),
+        recurrencePattern: parseInt(document.getElementById('recurrencePattern').value)
+    };
+
+    const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: getAuthHeaders(),
+        body: JSON.stringify(newEvent)
     });
 
     if (response.ok) {
         closeModal();
         renderCalendar();
-        document.getElementById('eventForm').reset();
-        document.getElementById('isRecurring').checked = false;
-        toggleRecurrenceOptions();
     } else {
-        const error = await response.text();
-        alert(`Помилка: ${error}`);
+        const err = await response.text();
+        alert(`Помилка при створенні події: ${err}`);
     }
-}
-
-function openModal(selectedDate) {
-    const modal = document.getElementById('eventModal');
-    modal.classList.add('active');
-    if (selectedDate instanceof Date) {
-        const startTime = new Date(selectedDate);
-        startTime.setHours(9, 0, 0, 0);
-        document.getElementById('startTime').value = startTime.toISOString().slice(0, 16);
-        document.getElementById('endTime').value = '';
-    }
-}
-
-function closeModal() {
-    document.getElementById('eventModal').classList.remove('active');
 }

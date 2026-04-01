@@ -21,9 +21,6 @@ namespace HORIZON1.Models
         public DateTime EndTime { get; set; }
 
         public bool IsRecurring { get; set; }
-        public RecurrenceType RecurrenceType { get; set; } = RecurrenceType.None;
-        public int? RecurrenceInterval { get; set; } // For custom intervals
-        public DateTime? RecurrenceEndDate { get; set; } // When the recurrence ends
         
         public bool IsDeleted { get; set; } = false;
 
@@ -31,20 +28,20 @@ namespace HORIZON1.Models
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
 
-        [Required]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category? Category { get; set; }
 
-        public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
-    }
+        public bool IsTemporaryCategory { get; set; } = false;
+        [StringLength(50)]
+        public string? TemporaryCategoryName { get; set; }
+        [StringLength(7)]
+        public string? TemporaryCategoryColor { get; set; }
 
-    public enum RecurrenceType
-    {
-        None,
-        Daily,
-        Weekly,
-        Monthly,
-        Yearly,
-        Custom
+        public RecurrencePattern RecurrencePattern { get; set; } = RecurrencePattern.None;
+        [StringLength(50)]
+        public string? RecurrenceDays { get; set; } // CSV, наприклад "Monday,Wednesday"
+
+        [ValidateNever]
+        public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
     }
 }

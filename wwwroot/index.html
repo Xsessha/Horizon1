@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon - Планувальник</title>
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Added Google Fonts link for Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
         <h1>HORIZON</h1>
         <div id="userInfo">
-            <span id="userName">Ім'я Користувача</span>
+            <span id="userName">Користувач</span>
             <button onclick="logout()">Вихід</button>
         </div>
     </header>
@@ -50,70 +49,42 @@
                 <label>Початок:</label>
                 <input type="datetime-local" id="startTime" required>
                 <label>Кінець:</label>
-                <input type="datetime-local" id="endTime">
-                
-                <label>Категорія:</label>
+                <input type="datetime-local" id="endTime" required>
+                <label for="categoryId">Категорія:</label>
                 <select id="categoryId">
                     <option value="1">Робота</option>
                     <option value="2">Навчання</option>
+                    <option value="3">Спорт</option>
+                    <option value="4">Особисте</option>
+                    <option value="5">Здоров'я</option>
+                    <option value="other">Інша</option>
                 </select>
-                <button type="button" id="addCategoryBtn">Додати категорію</button>
-                
-                <div id="recurrenceSection" style="display: none;">
-                    <label><input type="checkbox" id="isRecurring"> Повторювати подію</label>
-                    <select id="recurrenceType" disabled>
-                        <option value="1">Щодня</option>
-                        <option value="2">Щотижня</option>
-                        <option value="3">Щомісяця</option>
-                        <option value="4">Щороку</option>
-                    </select>
-                    <label>Кінець повторення:</label>
-                    <input type="date" id="recurrenceEndDate" disabled>
+
+                <div id="customCategoryWrapper" style="display: none; margin-bottom: 8px;">
+                    <input type="text" id="customCategoryName" placeholder="Введіть назву власної категорії" maxlength="50">
+                    <label for="customCategoryColor">Колір категорії:</label>
+                    <input type="color" id="customCategoryColor" value="#ff9900">
                 </div>
-                
-                <div id="reminderSection">
-                    <label><input type="checkbox" id="enableReminder" checked> Нагадування</label>
-                    <select id="reminderType">
-                        <option value="email">Email</option>
-                        <option value="sms">SMS</option>
-                        <option value="push">Push</option>
-                    </select>
-                    <select id="reminderMinutes">
-                        <option value="5">5 хвилин</option>
-                        <option value="15" selected>15 хвилин</option>
-                        <option value="30">30 хвилин</option>
-                        <option value="60">1 година</option>
-                        <option value="1440">1 день</option>
-                    </select>
-                </div>
-                
+
+                <label>Повторюваність:</label>
+                <select id="recurrencePattern">
+                    <option value="0">Ніколи</option>
+                    <option value="1">Щодня</option>
+                    <option value="2">Щотижня</option>
+                    <option value="3">Щомісяця</option>
+                    <option value="4">Щороку</option>
+                </select>
                 <div class="modal-buttons">
-                    <button type="submit" class="btn-save" aria-label="Зберегти подію">Зберегти</button>
+                    <button type="submit" class="btn-save">Зберегти</button>
                     <button type="button" class="btn-cancel" onclick="closeModal()">Скасувати</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="categoryModal" class="modal">
-        <div class="modal-content">
-            <h3>Нова категорія</h3>
-            <form id="categoryForm">
-                <input type="text" id="categoryName" placeholder="Назва категорії" required>
-                <input type="color" id="categoryColor" value="#FF5733" required>
-                <div class="modal-buttons">
-                    <button type="submit" class="btn-save">Зберегти</button>
-                    <button type="button" class="btn-cancel" onclick="closeCategoryModal()">Скасувати</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    <footer>
+        <div>&nbsp;</div>
+    </footer>
     <script src="js/app.js"></script>
-    <script>
-        // Replace 'Користувач' with the user's full name
-        const userName = "Ім'я Користувача"; // Replace with dynamic user name variable
-        document.getElementById('userName').textContent = userName;
-    </script>
 </body>
 </html>
