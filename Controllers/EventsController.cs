@@ -177,6 +177,35 @@ namespace HORIZON1.Controllers
             return Ok(createdEvent);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event updatedEvent)
+        {
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+
+            // Перевіряємо, чи існує подія і чи належить вона поточному користувачу
+            var existingEvent = await _repository.GetByIdAsync(id, CurrentUserId);
+            if (existingEvent == null)
+                return NotFound("Подію не знайдено або у вас немає прав на її редагування.");
+
+            // Оновлюємо поля
+            existingEvent.Title = updatedEvent.Title;
+            existingEvent.Description = updatedEvent.Description;
+            existingEvent.StartTime = updatedEvent.StartTime;
+            existingEvent.EndTime = updatedEvent.EndTime;
+            existingEvent.RecurrencePattern = updatedEvent.RecurrencePattern;
+            existingEvent.IsRecurring = updatedEvent.RecurrencePattern != RecurrencePattern.None;
+            
+            // Категорії
+            existingEvent.IsTemporaryCategory = updatedEvent.IsTemporaryCategory;
+            existingEvent.TemporaryCategoryName = updatedEvent.TemporaryCategoryName;
+            existingEvent.TemporaryCategoryColor = updatedEvent.TemporaryCategoryColor;
+            existingEvent.CategoryId = updatedEvent.IsTemporaryCategory ? null : updatedEvent.CategoryId;
+
+            await _repository.UpdateAsync(existingEvent);
+
+            return Ok(existingEvent);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {

@@ -18,18 +18,17 @@
 
     <main class="dashboard">
         <aside class="sidebar">
-            <h3>Категорії</h3>
-            <ul id="categoryList">
-                <li><span class="dot" style="background:#FF5733"></span> Робота</li>
-                <li><span class="dot" style="background:#33FF57"></span> Навчання</li>
-            </ul>
+            <div class="categories-container">
+                <h3>Категорії</h3>
+                <div id="categoryList" class="category-grid"></div>
+            </div>
         </aside>
 
         <section class="calendar-container">
             <div class="calendar-header">
-                <button id="prevMonth"><</button>
-                <h2 id="currentMonthYear">Березень 2026</h2>
-                <button id="nextMonth">></button>
+                <button id="prevMonth" class="btn-cal-nav" title="Попередній місяць">&#10094;</button>
+                <h2 id="currentMonthYear">Квітень 2026</h2>
+                <button id="nextMonth" class="btn-cal-nav" title="Наступний місяць">&#10095;</button>
             </div>
             <div id="calendarGrid" class="calendar-grid">
                 <div class="day-header">Пн</div><div class="day-header">Вт</div>
@@ -42,8 +41,9 @@
 
     <div id="eventModal" class="modal">
         <div class="modal-content">
-            <h3>Нова подія</h3>
+            <h3 id="modalTitle">Нова подія</h3> 
             <form id="eventForm">
+                <input type="hidden" id="editEventId">
                 <input type="text" id="eventTitle" placeholder="Назва (мін. 3 символи)" required minlength="3" maxlength="100">
                 <textarea id="eventDesc" placeholder="Опис"></textarea>
                 <label>Початок:</label>

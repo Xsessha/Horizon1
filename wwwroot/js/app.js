@@ -9,37 +9,55 @@ function getAuthHeaders() {
 
 async function loadCategories() {
     try {
-        const userToken = localStorage.getItem('token');
-        const response = await fetch(CATEGORY_API_URL, {
-            headers: getAuthHeaders()
+        const response = await fetch('/api/categories', {
+            headers: getAuthHeaders() // Використовуємо твою функцію для токена
         });
-        const categories = await response.json();
 
+        if (!response.ok) return;
+
+        const categories = await response.json();
         const categorySelect = document.getElementById('categoryId');
         const categoryList = document.getElementById('categoryList');
+
+        if (!categoryList || !categorySelect) return;
 
         categorySelect.innerHTML = '';
         categoryList.innerHTML = '';
 
         categories.forEach(c => {
+            // 1. Додаємо у випадаючий список форми
             const opt = document.createElement('option');
             opt.value = c.id;
             opt.textContent = c.name;
             categorySelect.appendChild(opt);
 
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="dot" style="background:${c.colorHex}"></span> ${c.name}`;
-            categoryList.appendChild(li);
+            // 2. Малюємо красиву картку в сайдбарі
+            const div = document.createElement('div');
+            div.className = 'category-item';
+            div.innerHTML = `
+                <div class="category-marker" style="background-color: ${c.colorHex}"></div>
+                <span class="category-label">${c.name}</span>
+            `;
+            
+            // Додаємо обробку кліку (фільтрація)
+            div.onclick = () => console.log(`Фільтр по категорії: ${c.name}`);
+            
+            categoryList.appendChild(div);
         });
 
-        const customOpt = document.createElement('option');
-        customOpt.value = 'other';
-        customOpt.textContent = 'Інша';
-        categorySelect.appendChild(customOpt);
+        // Додаємо опцію "Інша" в кінець списку
+        const otherOpt = document.createElement('option');
+        otherOpt.value = 'other';
+        otherOpt.textContent = 'Інша';
+        categorySelect.appendChild(otherOpt);
+
     } catch (err) {
-        console.warn('Не вдалося завантажити категорії, використано дефолтні.', err);
+        console.error('Помилка завантаження категорій:', err);
     }
 }
+
+// Виклик функції при старті
+document.addEventListener('DOMContentLoaded', loadCategories);
 
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
@@ -97,84 +115,100 @@ async function renderCalendar() {
 
     let events = [];
     try {
-        const response = await fetch(`${API_URL}/month/${year}/${month + 1}`, {
-            headers: getAuthHeaders()
-        });
-        if (!response.ok) {
-            if (response.status === 401) {
-                alert('Сесія закінчилася, будь ласка, увійдіть знову');
-                window.location.href = 'login.html';
-                return;
+        // Завантажуємо події за поточний, минулий та наступний місяці разом
+        const responses = await Promise.all([
+            fetch(`${API_URL}/month/${year}/${month}`, { headers: getAuthHeaders() }),     // минулий
+            fetch(`${API_URL}/month/${year}/${month + 1}`, { headers: getAuthHeaders() }), // поточний
+            fetch(`${API_URL}/month/${year}/${month + 2}`, { headers: getAuthHeaders() })  // наступний
+        ]);
+
+        for (const response of responses) {
+            if (response.ok) {
+                const data = await response.json();
+                events = events.concat(data);
             }
-            throw new Error(`Сервер повернув ${response.status}`);
         }
-        events = await response.json();
     } catch (error) {
         console.error('Помилка завантаження подій:', error);
-        events = [];
     }
 
     const startDate = new Date(year, month, 1);
     const dayOfWeek = (startDate.getDay() + 6) % 7; // 0=Пн
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
 
-    for (let i = 0; i < dayOfWeek; i++) {
-        const empty = document.createElement('div');
-        empty.className = 'calendar-day empty';
-        grid.appendChild(empty);
+    // --- 1. ДНІ МИНУЛОГО МІСЯЦЯ ---
+    for (let i = dayOfWeek; i > 0; i--) {
+        const day = daysInPrevMonth - i + 1;
+        const date = new Date(year, month - 1, day);
+        createDaySquare(grid, day, date, true, events); 
     }
 
+    // --- 2. ДНІ ПОТОЧНОГО МІСЯЦЯ ---
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
-        const daySquare = document.createElement('div');
-        daySquare.className = 'calendar-day';
-        daySquare.innerHTML = `<span>${day}</span>`;
-        daySquare.onclick = () => openModal(day);
-
-        const dayEvents = events.filter(e => {
-            const start = new Date(e.startTime);
-            const end = e.endTime ? new Date(e.endTime) : new Date(start);
-
-            if (e.recurrencePattern && e.recurrencePattern !== 0) {
-                // recurring events уже розгорнуті з бекенду в окремі дні
-                return start.getFullYear() === date.getFullYear() &&
-                    start.getMonth() === date.getMonth() &&
-                    start.getDate() === date.getDate();
-            }
-
-            const eventStartDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-            const eventEndDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-
-            return date >= eventStartDate && date <= eventEndDate;
-        });
-
-        dayEvents.forEach(e => {
-            const evEl = document.createElement('div');
-            evEl.className = 'event-item';
-            evEl.dataset.eventId = e.id;
-            const categoryColor = e.isTemporaryCategory ? e.temporaryCategoryColor || '#999' : e.category?.colorHex || '#999';
-            evEl.style.backgroundColor = categoryColor;
-            const categoryLabel = e.isTemporaryCategory ? ` (${e.temporaryCategoryName || 'Тимчасова'})` : '';
-            evEl.innerText = e.title + categoryLabel;
-
-            const deleteBtn = document.createElement('span');
-            deleteBtn.className = 'delete-event-btn';
-            deleteBtn.innerHTML = '&times;';
-
-            deleteBtn.onclick = async (eventClick) => {
-                eventClick.stopPropagation();
-                const isConfirmed = confirm(`Ви дійсно хочете видалити подію "${e.title}"?`);
-                if (isConfirmed) {
-                    await deleteEventFromServer(e.id, evEl);
-                }
-            };
-
-            evEl.appendChild(deleteBtn);
-            daySquare.appendChild(evEl);
-        });
-
-        grid.appendChild(daySquare);
+        createDaySquare(grid, day, date, false, events);
     }
+
+    // --- 3. ДНІ НАСТУПНОГО МІСЯЦЯ ---
+    const totalCells = 42;
+    const currentCells = grid.children.length - 7;
+    for (let day = 1; day <= (totalCells - currentCells); day++) {
+        const date = new Date(year, month + 1, day);
+        createDaySquare(grid, day, date, true, events);
+    }
+}
+
+function createDaySquare(grid, day, date, isOtherMonth, events) {
+    const daySquare = document.createElement('div');
+    daySquare.className = isOtherMonth ? 'calendar-day other-month' : 'calendar-day';
+    daySquare.innerHTML = `<span>${day}</span>`;
+    
+    if (!isOtherMonth) {
+        daySquare.onclick = () => openModal(day);
+    }
+
+    const dayEvents = events.filter(e => {
+        const start = new Date(e.startTime);
+        const end = e.endTime ? new Date(e.endTime) : new Date(start);
+        const eventStartDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        const eventEndDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+        return date >= eventStartDate && date <= eventEndDate;
+    });
+
+    dayEvents.forEach(e => {
+        const evEl = document.createElement('div');
+        evEl.className = 'event-item';
+        evEl.dataset.eventId = e.id;
+        
+        const categoryColor = e.isTemporaryCategory ? e.temporaryCategoryColor || '#999' : e.category?.colorHex || '#999';
+        evEl.style.backgroundColor = categoryColor;
+        const categoryLabel = e.isTemporaryCategory ? ` (${e.temporaryCategoryName || 'Тимчасова'})` : '';
+        evEl.innerText = e.title + categoryLabel;
+
+        // --- НОВИЙ БЛОК: КЛІК ДЛЯ РЕДАГУВАННЯ ---
+        evEl.onclick = (eventClick) => {
+            eventClick.stopPropagation(); // Зупиняємо, щоб не відкрилася порожня модалка дня
+            openEditModal(e); // Викликаємо функцію редагування і передаємо всю подію
+        };
+
+        const deleteBtn = document.createElement('span');
+        deleteBtn.className = 'delete-event-btn';
+        deleteBtn.innerHTML = '&times;';
+
+        deleteBtn.onclick = async (eventClick) => {
+            eventClick.stopPropagation();
+            const isConfirmed = confirm(`Ви дійсно хочете видалити подію "${e.title}"?`);
+            if (isConfirmed) {
+                await deleteEventFromServer(e.id, evEl);
+            }
+        };
+
+        evEl.appendChild(deleteBtn);
+        daySquare.appendChild(evEl);
+    });
+
+    grid.appendChild(daySquare);
 }
 
 // НОВА ФУНКЦІЯ: Відправка запиту на сервер для видалення події
@@ -230,11 +264,19 @@ function openModal(day) {
 function closeModal() {
     document.getElementById('eventModal').style.display = 'none';
     document.getElementById('eventForm').reset();
+    
+    // ВАЖЛИВО: Очищаємо ID редагування та повертаємо заголовок
+    document.getElementById('editEventId').value = "";
+    document.getElementById('modalTitle').innerText = "Нова подія";
 }
 
 async function createEvent(e) {
     e.preventDefault();
     
+    // ПЕРЕВІРКА: чи ми редагуємо (якщо в прихованому полі є ID)
+    const editId = document.getElementById('editEventId').value;
+    const isEdit = editId !== ""; 
+
     const startValue = document.getElementById('startTime').value;
     const endValue = document.getElementById('endTime').value;
     const start = new Date(startValue);
@@ -254,7 +296,7 @@ async function createEvent(e) {
         return;
     }
 
-    const newEvent = {
+    const eventData = {
         title: document.getElementById('eventTitle').value,
         description: document.getElementById('eventDesc').value,
         startTime: startValue,
@@ -266,10 +308,14 @@ async function createEvent(e) {
         recurrencePattern: parseInt(document.getElementById('recurrencePattern').value)
     };
 
-    const response = await fetch(API_URL, {
-        method: 'POST',
+    // ВИЗНАЧАЄМО МЕТОД ТА URL (PUT для редагування, POST для нового)
+    const url = isEdit ? `${API_URL}/${editId}` : API_URL;
+    const method = isEdit ? 'PUT' : 'POST';
+
+    const response = await fetch(url, {
+        method: method,
         headers: getAuthHeaders(),
-        body: JSON.stringify(newEvent)
+        body: JSON.stringify(eventData)
     });
 
     if (response.ok) {
@@ -277,6 +323,32 @@ async function createEvent(e) {
         renderCalendar();
     } else {
         const err = await response.text();
-        alert(`Помилка при створенні події: ${err}`);
+        alert(`Помилка: ${err}`);
     }
+}
+
+function openEditModal(eventData) {
+    // 1. Міняємо заголовок і показуємо модалку
+    document.getElementById('modalTitle').innerText = "Редагувати подію";
+    document.getElementById('editEventId').value = eventData.id;
+
+    // 2. Заповнюємо поля даними з бази
+    document.getElementById('eventTitle').value = eventData.title;
+    document.getElementById('eventDesc').value = eventData.description || '';
+    document.getElementById('startTime').value = formatLocalDateTime(new Date(eventData.startTime));
+    document.getElementById('endTime').value = formatLocalDateTime(new Date(eventData.endTime));
+    
+    // Категорія
+    const categorySelect = document.getElementById('categoryId');
+    if (eventData.isTemporaryCategory) {
+        categorySelect.value = 'other';
+        document.getElementById('customCategoryWrapper').style.display = 'block';
+        document.getElementById('customCategoryName').value = eventData.temporaryCategoryName;
+        document.getElementById('customCategoryColor').value = eventData.temporaryCategoryColor;
+    } else {
+        categorySelect.value = eventData.categoryId;
+        document.getElementById('customCategoryWrapper').style.display = 'none';
+    }
+
+    document.getElementById('eventModal').style.display = 'block';
 }
