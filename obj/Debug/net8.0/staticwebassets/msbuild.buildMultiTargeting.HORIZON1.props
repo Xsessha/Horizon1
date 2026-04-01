@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\HORIZON1.props" />
-</Project>
