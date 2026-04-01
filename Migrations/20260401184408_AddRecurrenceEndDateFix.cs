@@ -5,7 +5,7 @@
 namespace HORIZON1.Migrations
 {
     /// <inheritdoc />
-    public partial class FinalFix : Migration
+    public partial class AddRecurrenceEndDateFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

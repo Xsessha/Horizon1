@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HORIZON1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260401193926_FinalFix")]
-    partial class FinalFix
+    [Migration("20260401184156_AddRecurrenceEndDate")]
+    partial class AddRecurrenceEndDate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -211,9 +211,6 @@ namespace HORIZON1.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
-                    b.Property<long?>("TelegramChatId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
@@ -369,7 +366,7 @@ namespace HORIZON1.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HORIZON1.Models.User", "User")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -449,11 +446,6 @@ namespace HORIZON1.Migrations
             modelBuilder.Entity("HORIZON1.Models.Event", b =>
                 {
                     b.Navigation("Reminders");
-                });
-
-            modelBuilder.Entity("HORIZON1.Models.User", b =>
-                {
-                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }

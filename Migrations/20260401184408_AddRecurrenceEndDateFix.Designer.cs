@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HORIZON1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260401183340_UpdateUserForTelegram")]
-    partial class UpdateUserForTelegram
+    [Migration("20260401184408_AddRecurrenceEndDateFix")]
+    partial class AddRecurrenceEndDateFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,6 +99,9 @@ namespace HORIZON1.Migrations
 
                     b.Property<string>("RecurrenceDays")
                         .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("RecurrenceEndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RecurrencePattern")
@@ -207,9 +210,6 @@ namespace HORIZON1.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
-
-                    b.Property<long?>("TelegramChatId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
@@ -366,7 +366,7 @@ namespace HORIZON1.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HORIZON1.Models.User", "User")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -446,11 +446,6 @@ namespace HORIZON1.Migrations
             modelBuilder.Entity("HORIZON1.Models.Event", b =>
                 {
                     b.Navigation("Reminders");
-                });
-
-            modelBuilder.Entity("HORIZON1.Models.User", b =>
-                {
-                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }
