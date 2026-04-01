@@ -65,20 +65,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false; // Спростимо для тестів
+    options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// --- ЦЕЙ БЛОК ВИПРАВЛЯЄ 404 НА /Account/Login ---
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/login.html"; // Перенаправляти на твій файл у wwwroot
+    options.LoginPath = "/login.html";
     options.AccessDeniedPath = "/login.html";
     options.Events.OnRedirectToLogin = context =>
     {
-        // Якщо це запит до API, не робимо редирект, а повертаємо 401
         if (context.Request.Path.StartsWithSegments("/api"))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
@@ -90,10 +88,13 @@ builder.Services.ConfigureApplicationCookie(options =>
         return Task.CompletedTask;
     };
 });
-// ------------------------------------------------
 
+// --- СЕРВІСИ ---
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<HORIZON1.Factory.ReminderFactory>();
+
+// ДОДАНО ДЛЯ БОТА: Реєструємо сервіс бота як Singleton
+builder.Services.AddSingleton<TelegramBotService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -101,9 +102,18 @@ builder.Services.AddHostedService<ReminderBackgroundService>();
 
 var app = builder.Build();
 
+// --- ЗАПУСК БОТА ПРИ СТАРТІ ---
+// ДОДАНО ДЛЯ БОТА: Отримуємо сервіс і викликаємо метод Start()
+using (var scope = app.Services.CreateScope())
+{
+    var botService = scope.ServiceProvider.GetRequiredService<TelegramBotService>();
+    botService.Start();
+}
+// ------------------------------
+
 // 5. Конфігурація Middleware
-app.UseDefaultFiles(); // Дозволяє завантажувати index.html автоматично
-app.UseStaticFiles();  // Дозволяє доступ до файлів у wwwroot
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseSwagger();
 app.UseSwaggerUI(c => {
@@ -117,7 +127,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// 6. Додатковий маршрут для SPA (якщо сторінку не знайдено в API, вантажимо index.html)
 app.MapFallbackToFile("index.html");
 
 app.Run();

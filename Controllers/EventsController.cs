@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using HORIZON1.Models;
 using HORIZON1.Repository;
-using HORIZON1.Factory;
+using HORIZON1.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace HORIZON1.Controllers
 {
@@ -13,24 +14,46 @@ namespace HORIZON1.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IEventRepository _repository;
-        private readonly ReminderFactory _reminderFactory;
-        
+        private readonly AppDbContext _context;
 
-        public EventsController(IEventRepository repository, ReminderFactory reminderFactory)
+        public EventsController(IEventRepository repository, AppDbContext context)
         {
             _repository = repository;
-            _reminderFactory = reminderFactory;
+            _context = context;
         }
 
         private string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetAllEvents()
+        [HttpPost]
+        public async Task<ActionResult<Event>> CreateEvent(Event newEvent)
         {
             if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+            
+            newEvent.UserId = CurrentUserId;
+            newEvent.IsRecurring = newEvent.RecurrencePattern != RecurrencePattern.None;
 
-            var events = await _repository.GetAllAsync(CurrentUserId);
-            return Ok(events);
+            // 1. Створюємо подію
+            var createdEvent = await _repository.CreateAsync(newEvent);
+
+            // 2. Логіка нагадування за 15 хв (з використанням DateTime.Now)
+            var reminderTime = createdEvent.StartTime.AddMinutes(-15);
+            if (reminderTime < DateTime.Now) 
+            {
+                reminderTime = DateTime.Now.AddMinutes(1);
+            }
+
+            // 3. Додаємо нагадування в базу
+            var reminder = new Reminder
+            {
+                EventId = createdEvent.Id,
+                ReminderTime = reminderTime,
+                Message = $"🔔 Нагадування: '{createdEvent.Title}' почнеться о {createdEvent.StartTime:HH:mm}!"
+            };
+
+            _context.Reminders.Add(reminder);
+            await _context.SaveChangesAsync();
+
+            return Ok(createdEvent);
         }
 
         [HttpGet("month/{year}/{month}")]
@@ -38,7 +61,7 @@ namespace HORIZON1.Controllers
         {
             if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
 
-            var events = await _repository.GetEventsByMonthAsync(year, month, CurrentUserId);
+            var events = await _repository.GetAllAsync(CurrentUserId); 
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1).AddTicks(-1);
             var results = new List<Event>();
@@ -47,146 +70,45 @@ namespace HORIZON1.Controllers
             {
                 if (ev.RecurrencePattern == RecurrencePattern.None)
                 {
-                    results.Add(ev);
+                    if (ev.StartTime <= monthEnd && ev.EndTime >= monthStart) results.Add(ev);
                     continue;
                 }
 
-                var occurrenceStart = ev.StartTime;
-                var occurrenceEnd = ev.EndTime;
+                var currentStart = ev.StartTime;
+                var currentEnd = ev.EndTime;
 
-                DateTime currentStart = occurrenceStart;
-                DateTime currentEnd = occurrenceEnd;
+                // Перевірка наявності RecurrenceEndDate після оновлення моделі
+                if (ev.RecurrenceEndDate.HasValue && ev.RecurrenceEndDate.Value < monthStart) continue;
 
-                // починаємо від першого дня місяця, якщо подія почалась раніше
-                if (currentStart < monthStart)
+                while (currentStart < monthStart)
                 {
-                    switch (ev.RecurrencePattern)
-                    {
-                        case RecurrencePattern.Daily:
-                            var daysOffset = (monthStart - currentStart).Days;
-                            currentStart = currentStart.AddDays(daysOffset);
-                            currentEnd = currentEnd.AddDays(daysOffset);
-                            break;
-                        case RecurrencePattern.Weekly:
-                            while (currentStart < monthStart)
-                            {
-                                currentStart = currentStart.AddDays(7);
-                                currentEnd = currentEnd.AddDays(7);
-                            }
-                            break;
-                        case RecurrencePattern.Monthly:
-                            while (currentStart < monthStart)
-                            {
-                                currentStart = currentStart.AddMonths(1);
-                                currentEnd = currentEnd.AddMonths(1);
-                            }
-                            break;
-                        case RecurrencePattern.Yearly:
-                            while (currentStart < monthStart)
-                            {
-                                currentStart = currentStart.AddYears(1);
-                                currentEnd = currentEnd.AddYears(1);
-                            }
-                            break;
-                    }
+                    currentStart = MoveNext(currentStart, ev.RecurrencePattern);
+                    currentEnd = MoveNext(currentEnd, ev.RecurrencePattern);
                 }
 
-                while (currentStart <= monthEnd && currentStart < ev.EndTime.AddYears(100)) // убезпечення
+                while (currentStart <= monthEnd)
                 {
-                    if (currentEnd >= monthStart && currentStart <= monthEnd)
-                    {
-                        var occurrence = new Event
-                        {
-                            Id = ev.Id,
-                            Title = ev.Title,
-                            Description = ev.Description,
-                            StartTime = currentStart,
-                            EndTime = currentEnd,
-                            IsRecurring = ev.IsRecurring,
-                            IsDeleted = ev.IsDeleted,
-                            UserId = ev.UserId,
-                            CategoryId = ev.CategoryId,
-                            Category = ev.Category,
-                            IsTemporaryCategory = ev.IsTemporaryCategory,
-                            TemporaryCategoryName = ev.TemporaryCategoryName,
-                            TemporaryCategoryColor = ev.TemporaryCategoryColor,
-                            RecurrencePattern = ev.RecurrencePattern,
-                            RecurrenceDays = ev.RecurrenceDays,
-                        };
+                    if (ev.RecurrenceEndDate.HasValue && currentStart.Date > ev.RecurrenceEndDate.Value.Date) break;
 
-                        results.Add(occurrence);
-                    }
+                    results.Add(new Event {
+                        Id = ev.Id, Title = ev.Title, StartTime = currentStart, EndTime = currentEnd,
+                        UserId = ev.UserId, RecurrencePattern = ev.RecurrencePattern
+                    });
 
-                    currentStart = ev.RecurrencePattern switch
-                    {
-                        RecurrencePattern.Daily => currentStart.AddDays(1),
-                        RecurrencePattern.Weekly => currentStart.AddDays(7),
-                        RecurrencePattern.Monthly => currentStart.AddMonths(1),
-                        RecurrencePattern.Yearly => currentStart.AddYears(1),
-                        _ => currentStart.AddDays(1)
-                    };
-                    currentEnd = ev.RecurrencePattern switch
-                    {
-                        RecurrencePattern.Daily => currentEnd.AddDays(1),
-                        RecurrencePattern.Weekly => currentEnd.AddDays(7),
-                        RecurrencePattern.Monthly => currentEnd.AddMonths(1),
-                        RecurrencePattern.Yearly => currentEnd.AddYears(1),
-                        _ => currentEnd.AddDays(1)
-                    };
+                    currentStart = MoveNext(currentStart, ev.RecurrencePattern);
+                    currentEnd = MoveNext(currentEnd, ev.RecurrencePattern);
                 }
             }
-
             return Ok(results.OrderBy(e => e.StartTime));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Event>> CreateEvent(Event newEvent, [FromQuery] string reminderType = "email")
+        private DateTime MoveNext(DateTime date, RecurrencePattern pattern) => pattern switch
         {
-            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized("Користувач не авторизований.");
-
-            newEvent.UserId = CurrentUserId;
-
-            if (newEvent.EndTime <= newEvent.StartTime)
-                return BadRequest("Час закінчення має бути пізніше за час початку.");
-
-            if (newEvent.IsTemporaryCategory)
-            {
-                // Не зберігаємо нову категорію у БД
-                newEvent.CategoryId = null;
-                newEvent.Category = null;
-            }
-
-            newEvent.IsRecurring = newEvent.RecurrencePattern != RecurrencePattern.None;
-
-            var createdEvent = await _repository.CreateAsync(newEvent);
-
-            var reminderTime = createdEvent.StartTime.AddMinutes(-30);
-            if (reminderTime < DateTime.UtcNow)
-            {
-                reminderTime = DateTime.UtcNow.AddMinutes(1);
-            }
-
-            var strategy = _reminderFactory.CreateStrategy(reminderType);
-            strategy.SendReminder(createdEvent, new Reminder
-            {
-                Message = $"Нагадування: подія '{createdEvent.Title}' починається {createdEvent.StartTime:dd.MM.yyyy HH:mm}",
-                ReminderTime = reminderTime,
-                EventId = createdEvent.Id
-            });
-
-            return Ok(createdEvent);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent(int id)
-        {
-            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
-
-            var result = await _repository.DeleteAsync(id, CurrentUserId);
-            if (!result)
-                return NotFound("Подію не знайдено або у вас немає прав на її видалення.");
-
-            return Ok("Подію успішно видалено.");
-        }
+            RecurrencePattern.Daily => date.AddDays(1),
+            RecurrencePattern.Weekly => date.AddDays(7),
+            RecurrencePattern.Monthly => date.AddMonths(1),
+            RecurrencePattern.Yearly => date.AddYears(1),
+            _ => date.AddDays(1)
+        };
     }
 }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BQtDkVAbY/YFC1l90uOSY8b/e4ZgD0FZGuWXX4ODBQg=",
+  "Hash": "f3pPjtOmI49IlOIqgc/wla6fell+hBbhHGaKMntKow0=",
   "Source": "HORIZON1",
   "BasePath": "_content/HORIZON1",
   "Mode": "Default",
@@ -31,8 +31,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "ubp7oclp3f",
-      "Integrity": "BixE/yDkM/OLz8/Wu1EBtQ05hBtkuM/cXq9vquQXdek=",
+      "Fingerprint": "s6uqaewmkj",
+      "Integrity": "VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\style.css"
@@ -52,8 +52,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "z45z1zj0g8",
-      "Integrity": "Pb56hWGqQprOgRBRjrRnLg20f5H3ipSsgyFjJfPeVCI=",
+      "Fingerprint": "siwx75l9k8",
+      "Integrity": "5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\index.html"
@@ -73,8 +73,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "62b467q4qt",
-      "Integrity": "/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38=",
+      "Fingerprint": "bau578g0ik",
+      "Integrity": "k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\app.js"
@@ -155,7 +155,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4284"
+          "Value": "7162"
         },
         {
           "Name": "Content-Type",
@@ -163,11 +163,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"BixE/yDkM/OLz8/Wu1EBtQ05hBtkuM/cXq9vquQXdek=\""
+          "Value": "\"VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 15:10:07 GMT"
+          "Value": "Wed, 01 Apr 2026 20:31:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -177,12 +177,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-BixE/yDkM/OLz8/Wu1EBtQ05hBtkuM/cXq9vquQXdek="
+          "Value": "sha256-VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA="
         }
       ]
     },
     {
-      "Route": "css/style.ubp7oclp3f.css",
+      "Route": "css/style.s6uqaewmkj.css",
       "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\css\\style.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -192,7 +192,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4284"
+          "Value": "7162"
         },
         {
           "Name": "Content-Type",
@@ -200,11 +200,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"BixE/yDkM/OLz8/Wu1EBtQ05hBtkuM/cXq9vquQXdek=\""
+          "Value": "\"VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 15:10:07 GMT"
+          "Value": "Wed, 01 Apr 2026 20:31:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -214,7 +214,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ubp7oclp3f"
+          "Value": "s6uqaewmkj"
         },
         {
           "Name": "label",
@@ -222,7 +222,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-BixE/yDkM/OLz8/Wu1EBtQ05hBtkuM/cXq9vquQXdek="
+          "Value": "sha256-VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA="
         }
       ]
     },
@@ -237,7 +237,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4129"
+          "Value": "4785"
         },
         {
           "Name": "Content-Type",
@@ -245,11 +245,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Pb56hWGqQprOgRBRjrRnLg20f5H3ipSsgyFjJfPeVCI=\""
+          "Value": "\"5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 15:12:56 GMT"
+          "Value": "Wed, 01 Apr 2026 20:31:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -259,12 +259,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Pb56hWGqQprOgRBRjrRnLg20f5H3ipSsgyFjJfPeVCI="
+          "Value": "sha256-5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs="
         }
       ]
     },
     {
-      "Route": "index.z45z1zj0g8.html",
+      "Route": "index.siwx75l9k8.html",
       "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\index.html",
       "Selectors": [],
       "ResponseHeaders": [
@@ -274,7 +274,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4129"
+          "Value": "4785"
         },
         {
           "Name": "Content-Type",
@@ -282,11 +282,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Pb56hWGqQprOgRBRjrRnLg20f5H3ipSsgyFjJfPeVCI=\""
+          "Value": "\"5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 15:12:56 GMT"
+          "Value": "Wed, 01 Apr 2026 20:31:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -296,7 +296,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "z45z1zj0g8"
+          "Value": "siwx75l9k8"
         },
         {
           "Name": "label",
@@ -304,12 +304,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Pb56hWGqQprOgRBRjrRnLg20f5H3ipSsgyFjJfPeVCI="
+          "Value": "sha256-5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs="
         }
       ]
     },
     {
-      "Route": "js/app.62b467q4qt.js",
+      "Route": "js/app.bau578g0ik.js",
       "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\app.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -319,7 +319,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11193"
+          "Value": "14816"
         },
         {
           "Name": "Content-Type",
@@ -327,11 +327,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38=\""
+          "Value": "\"k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 15:12:27 GMT"
+          "Value": "Wed, 01 Apr 2026 18:00:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -341,7 +341,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "62b467q4qt"
+          "Value": "bau578g0ik"
         },
         {
           "Name": "label",
@@ -349,7 +349,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38="
+          "Value": "sha256-k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4="
         }
       ]
     },
@@ -364,7 +364,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11193"
+          "Value": "14816"
         },
         {
           "Name": "Content-Type",
@@ -372,11 +372,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38=\""
+          "Value": "\"k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 15:12:27 GMT"
+          "Value": "Wed, 01 Apr 2026 18:00:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -386,7 +386,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38="
+          "Value": "sha256-k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4="
         }
       ]
     },

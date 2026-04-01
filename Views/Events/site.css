@@ -1,0 +1,93 @@
+/* Основні налаштування шрифтів та фону */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fdfcfb; /* Дуже світлий кремовий фон */
+    color: #444;
+    margin: 0;
+    padding: 0;
+}
+
+/* Навігаційна панель */
+.navbar {
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #a2d2ff !important; /* Пастельний блакитний */
+}
+
+.nav-link {
+    color: #666 !important;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #ffafcc !important; /* Пастельний рожевий при наведенні */
+}
+
+/* Кнопка Telegram (якщо ти не винесла стилі в _Layout) */
+.btn-telegram {
+    background-color: #bde0fe;
+    color: #444;
+    border-radius: 30px;
+    padding: 10px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.btn-telegram:hover {
+    background-color: #a2d2ff;
+    transform: translateY(-2px);
+    color: #222;
+}
+
+/* Картки подій у календарі */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s;
+    background-color: #ffffff;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Заголовки */
+h1, h2, h3 {
+    color: #bdb2ff; /* Пастельний фіолетовий */
+    font-weight: 700;
+}
+
+/* Футер */
+footer {
+    background-color: #f8f9fa;
+    padding: 30px 0;
+    border-top: 1px solid #eee;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* Класи для статусів (можна використати в календарі) */
+.status-done { background-color: #caffbf; } /* Пастельний зелений */
+.status-pending { background-color: #fdffb6; } /* Пастельний жовтий */
+.status-urgent { background-color: #ffadad; } /* Пастельний червоний */
+
+/* Адаптивність для мобільних пристроїв */
+@media (max-width: 768px) {
+    .btn-telegram {
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+    }
+}

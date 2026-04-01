@@ -10,9 +10,14 @@
 <body>
     <header>
         <h1>HORIZON</h1>
-        <div id="userInfo">
-            <span id="userName">Користувач</span>
-            <button onclick="logout()">Вихід</button>
+        <div class="header-right">
+            <a href="https://t.me/Horizon1_bot" target="_blank" class="btn-telegram-header">
+                <span>✈️</span> Бот Telegram
+            </a>
+            <div id="userInfo">
+                <span id="userName">Користувач</span>
+                <button onclick="logout()">Вихід</button>
+            </div>
         </div>
     </header>
 
@@ -35,7 +40,7 @@
                 <div class="day-header">Ср</div><div class="day-header">Чт</div>
                 <div class="day-header">Пт</div><div class="day-header">Сб</div>
                 <div class="day-header">Нд</div>
-                </div>
+            </div>
         </section>
     </main>
 
@@ -74,6 +79,10 @@
                     <option value="3">Щомісяця</option>
                     <option value="4">Щороку</option>
                 </select>
+                <div id="recurrenceEndDateWrapper" style="display: none; margin-top: 10px; margin-bottom: 15px;">
+                    <label for="recurrenceEndDate">Повторювати до (включно):</label>
+                    <input type="date" id="recurrenceEndDate">
+                </div>
                 <div class="modal-buttons">
                     <button type="submit" class="btn-save">Зберегти</button>
                     <button type="button" class="btn-cancel" onclick="closeModal()">Скасувати</button>
@@ -83,7 +92,7 @@
     </div>
 
     <footer>
-        <div>&nbsp;</div>
+        <div>&copy; 2026 Horizon</div>
     </footer>
     <script src="js/app.js"></script>
 </body>

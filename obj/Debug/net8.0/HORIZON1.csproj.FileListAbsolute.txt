@@ -132,3 +132,6 @@ C:\Users\Lenovo Yoga\OneDrive\Desktop\Horizon1\obj\Debug\net8.0\refint\HORIZON1.
 C:\Users\Lenovo Yoga\OneDrive\Desktop\Horizon1\obj\Debug\net8.0\HORIZON1.pdb
 C:\Users\Lenovo Yoga\OneDrive\Desktop\Horizon1\obj\Debug\net8.0\HORIZON1.genruntimeconfig.cache
 C:\Users\Lenovo Yoga\OneDrive\Desktop\Horizon1\obj\Debug\net8.0\ref\HORIZON1.dll
+C:\Users\Lenovo Yoga\OneDrive\Desktop\Horizon1\bin\Debug\net8.0\Telegram.Bot.dll
+C:\Users\Lenovo Yoga\OneDrive\Desktop\Horizon1\obj\Debug\net8.0\HORIZON1.RazorAssemblyInfo.cache
+C:\Users\Lenovo Yoga\OneDrive\Desktop\Horizon1\obj\Debug\net8.0\HORIZON1.RazorAssemblyInfo.cs

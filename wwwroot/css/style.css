@@ -283,3 +283,39 @@ input, textarea, select {
     transform: scale(0.95); 
     background-color: #f1f1f1;
 }
+/* --- СТИЛІ КНОПКИ ТЕЛЕГРАМ --- */
+
+/* Контейнер для вирівнювання кнопки та профілю в один ряд */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem; /* Відстань між кнопкою та профілем */
+    z-index: 10;
+}
+
+.btn-telegram-header {
+    background: rgba(255, 255, 255, 0.5); /* "Скляний" пастельний ефект */
+    color: #1f2b44 !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 0.8rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.btn-telegram-header:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(36, 58, 110, 0.15);
+}
+
+/* Іконка літачка */
+.btn-telegram-header span {
+    font-size: 1.1rem;
+}
