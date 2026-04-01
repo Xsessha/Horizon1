@@ -38,61 +38,65 @@ namespace HORIZON1.Controllers
         {
             if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
 
-            var events = await _repository.GetEventsByMonthAsync(year, month, CurrentUserId);
+            // БЕРЕМО ВСІ ПОДІЇ: щоб точно захопити повторювані події, які почалися в минулих місяцях/роках
+            var events = await _repository.GetAllAsync(CurrentUserId); 
+            
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1).AddTicks(-1);
             var results = new List<Event>();
 
             foreach (var ev in events)
             {
+                // 1. Якщо подія НЕ повторюється - просто перевіряємо чи вона в цьому місяці
                 if (ev.RecurrencePattern == RecurrencePattern.None)
                 {
-                    results.Add(ev);
+                    if (ev.StartTime <= monthEnd && ev.EndTime >= monthStart)
+                    {
+                        results.Add(ev);
+                    }
                     continue;
                 }
 
-                var occurrenceStart = ev.StartTime;
-                var occurrenceEnd = ev.EndTime;
+                // 2. Якщо подія ПОВТОРЮЄТЬСЯ
+                var currentStart = ev.StartTime;
+                var currentEnd = ev.EndTime;
 
-                DateTime currentStart = occurrenceStart;
-                DateTime currentEnd = occurrenceEnd;
-
-                // починаємо від першого дня місяця, якщо подія почалась раніше
-                if (currentStart < monthStart)
+                // Якщо подія має кінцеву дату повторення, і ця дата БУЛА ДО початку поточного місяця - ігноруємо
+                if (ev.RecurrenceEndDate.HasValue && ev.RecurrenceEndDate.Value < monthStart)
                 {
-                    switch (ev.RecurrencePattern)
-                    {
-                        case RecurrencePattern.Daily:
-                            var daysOffset = (monthStart - currentStart).Days;
-                            currentStart = currentStart.AddDays(daysOffset);
-                            currentEnd = currentEnd.AddDays(daysOffset);
-                            break;
-                        case RecurrencePattern.Weekly:
-                            while (currentStart < monthStart)
-                            {
-                                currentStart = currentStart.AddDays(7);
-                                currentEnd = currentEnd.AddDays(7);
-                            }
-                            break;
-                        case RecurrencePattern.Monthly:
-                            while (currentStart < monthStart)
-                            {
-                                currentStart = currentStart.AddMonths(1);
-                                currentEnd = currentEnd.AddMonths(1);
-                            }
-                            break;
-                        case RecurrencePattern.Yearly:
-                            while (currentStart < monthStart)
-                            {
-                                currentStart = currentStart.AddYears(1);
-                                currentEnd = currentEnd.AddYears(1);
-                            }
-                            break;
-                    }
+                    continue;
                 }
 
-                while (currentStart <= monthEnd && currentStart < ev.EndTime.AddYears(100)) // убезпечення
+                // "Перемотуємо" дату вперед, поки вона не дійде до поточного місяця (щоб не генерувати роки даремно)
+                while (currentStart < monthStart)
                 {
+                    currentStart = ev.RecurrencePattern switch
+                    {
+                        RecurrencePattern.Daily => currentStart.AddDays(1),
+                        RecurrencePattern.Weekly => currentStart.AddDays(7),
+                        RecurrencePattern.Monthly => currentStart.AddMonths(1),
+                        RecurrencePattern.Yearly => currentStart.AddYears(1),
+                        _ => currentStart.AddDays(1)
+                    };
+                    currentEnd = ev.RecurrencePattern switch
+                    {
+                        RecurrencePattern.Daily => currentEnd.AddDays(1),
+                        RecurrencePattern.Weekly => currentEnd.AddDays(7),
+                        RecurrencePattern.Monthly => currentEnd.AddMonths(1),
+                        RecurrencePattern.Yearly => currentEnd.AddYears(1),
+                        _ => currentEnd.AddDays(1)
+                    };
+                }
+
+                // ГЕНЕРУЄМО події для поточного місяця
+                while (currentStart <= monthEnd)
+                {
+                    // НАЙГОЛОВНІША ПЕРЕВІРКА: чи не вийшли ми за межі кінцевої дати повторення?
+                    if (ev.RecurrenceEndDate.HasValue && currentStart.Date > ev.RecurrenceEndDate.Value.Date)
+                    {
+                        break; // Зупиняємо генерацію для цієї події!
+                    }
+
                     if (currentEnd >= monthStart && currentStart <= monthEnd)
                     {
                         var occurrence = new Event
@@ -112,11 +116,13 @@ namespace HORIZON1.Controllers
                             TemporaryCategoryColor = ev.TemporaryCategoryColor,
                             RecurrencePattern = ev.RecurrencePattern,
                             RecurrenceDays = ev.RecurrenceDays,
+                            RecurrenceEndDate = ev.RecurrenceEndDate // Передаємо нашу нову дату
                         };
 
                         results.Add(occurrence);
                     }
 
+                    // Крок до наступної дати
                     currentStart = ev.RecurrencePattern switch
                     {
                         RecurrencePattern.Daily => currentStart.AddDays(1),
