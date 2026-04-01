@@ -1,0 +1,640 @@
+{
+  "Version": 1,
+  "Hash": "f3pPjtOmI49IlOIqgc/wla6fell+hBbhHGaKMntKow0=",
+  "Source": "HORIZON1",
+  "BasePath": "_content/HORIZON1",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "HORIZON1\\wwwroot",
+      "Source": "HORIZON1",
+      "ContentRoot": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\",
+      "BasePath": "_content/HORIZON1",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\css\\style.css",
+      "SourceId": "HORIZON1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\",
+      "BasePath": "_content/HORIZON1",
+      "RelativePath": "css/style#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "s6uqaewmkj",
+      "Integrity": "VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\style.css"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\index.html",
+      "SourceId": "HORIZON1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\",
+      "BasePath": "_content/HORIZON1",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "siwx75l9k8",
+      "Integrity": "5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\app.js",
+      "SourceId": "HORIZON1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\",
+      "BasePath": "_content/HORIZON1",
+      "RelativePath": "js/app#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bau578g0ik",
+      "Integrity": "k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\app.js"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\auth.js",
+      "SourceId": "HORIZON1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\",
+      "BasePath": "_content/HORIZON1",
+      "RelativePath": "js/auth#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ek9z0ti7n0",
+      "Integrity": "0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\auth.js"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\login.html",
+      "SourceId": "HORIZON1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\",
+      "BasePath": "_content/HORIZON1",
+      "RelativePath": "login#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "38v60ztmvi",
+      "Integrity": "k5++x3ONVDIoBvmmLJ1N5UD1ATAEf3X+WvcUpOLMzAw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\login.html"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\site.css",
+      "SourceId": "HORIZON1",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\",
+      "BasePath": "_content/HORIZON1",
+      "RelativePath": "site#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "5ipweew5fc",
+      "Integrity": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\site.css"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "css/style.css",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\css\\style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7162"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 20:31:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA="
+        }
+      ]
+    },
+    {
+      "Route": "css/style.s6uqaewmkj.css",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\css\\style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7162"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 20:31:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "s6uqaewmkj"
+        },
+        {
+          "Name": "label",
+          "Value": "css/style.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VN3T2DvpJIlePkIYADtih/Yr27WyUq/FRJSCzhLyeaA="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4785"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 20:31:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs="
+        }
+      ]
+    },
+    {
+      "Route": "index.siwx75l9k8.html",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4785"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 20:31:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "siwx75l9k8"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5E0h/tpV0lMQU6uhFnvyxfK0LtGJ80VbpAzvy7atpYs="
+        }
+      ]
+    },
+    {
+      "Route": "js/app.bau578g0ik.js",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\app.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14816"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 18:00:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bau578g0ik"
+        },
+        {
+          "Name": "label",
+          "Value": "js/app.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4="
+        }
+      ]
+    },
+    {
+      "Route": "js/app.js",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\app.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14816"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 18:00:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-k69/Qx+78LlSviqbFHPym2Zm1Lyg3y5YwtgyBZegSk4="
+        }
+      ]
+    },
+    {
+      "Route": "js/auth.ek9z0ti7n0.js",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\auth.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3784"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 15:12:42 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ek9z0ti7n0"
+        },
+        {
+          "Name": "label",
+          "Value": "js/auth.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas="
+        }
+      ]
+    },
+    {
+      "Route": "js/auth.js",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\auth.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3784"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 15:12:42 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas="
+        }
+      ]
+    },
+    {
+      "Route": "login.38v60ztmvi.html",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\login.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2576"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k5++x3ONVDIoBvmmLJ1N5UD1ATAEf3X+WvcUpOLMzAw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 15:13:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "38v60ztmvi"
+        },
+        {
+          "Name": "label",
+          "Value": "login.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-k5++x3ONVDIoBvmmLJ1N5UD1ATAEf3X+WvcUpOLMzAw="
+        }
+      ]
+    },
+    {
+      "Route": "login.html",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\login.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2576"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k5++x3ONVDIoBvmmLJ1N5UD1ATAEf3X+WvcUpOLMzAw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 15:13:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-k5++x3ONVDIoBvmmLJ1N5UD1ATAEf3X+WvcUpOLMzAw="
+        }
+      ]
+    },
+    {
+      "Route": "site.5ipweew5fc.css",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 30 Mar 2026 14:27:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5ipweew5fc"
+        },
+        {
+          "Name": "label",
+          "Value": "site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    },
+    {
+      "Route": "site.css",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 30 Mar 2026 14:27:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    }
+  ]
+}

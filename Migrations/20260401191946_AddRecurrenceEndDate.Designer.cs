@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HORIZON1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260330210519_UpgradeEventFeatures")]
-    partial class UpgradeEventFeatures
+    [Migration("20260401191946_AddRecurrenceEndDate")]
+    partial class AddRecurrenceEndDate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,9 +82,6 @@ namespace HORIZON1.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CategoryId1")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -102,6 +99,9 @@ namespace HORIZON1.Migrations
 
                     b.Property<string>("RecurrenceDays")
                         .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("RecurrenceEndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RecurrencePattern")
@@ -130,8 +130,6 @@ namespace HORIZON1.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("CategoryId1");
 
                     b.HasIndex("UserId");
 
@@ -212,6 +210,9 @@ namespace HORIZON1.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
+
+                    b.Property<long?>("TelegramChatId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
@@ -363,16 +364,12 @@ namespace HORIZON1.Migrations
             modelBuilder.Entity("HORIZON1.Models.Event", b =>
                 {
                     b.HasOne("HORIZON1.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("HORIZON1.Models.Category", null)
-                        .WithMany("Events")
-                        .HasForeignKey("CategoryId1");
-
                     b.HasOne("HORIZON1.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -452,6 +449,11 @@ namespace HORIZON1.Migrations
             modelBuilder.Entity("HORIZON1.Models.Event", b =>
                 {
                     b.Navigation("Reminders");
+                });
+
+            modelBuilder.Entity("HORIZON1.Models.User", b =>
+                {
+                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }
