@@ -151,6 +151,7 @@ async function renderCalendar() {
         dayEvents.forEach(e => {
             const evEl = document.createElement('div');
             evEl.className = 'event-item';
+            evEl.dataset.eventId = e.id;
             const categoryColor = e.isTemporaryCategory ? e.temporaryCategoryColor || '#999' : e.category?.colorHex || '#999';
             evEl.style.backgroundColor = categoryColor;
             const categoryLabel = e.isTemporaryCategory ? ` (${e.temporaryCategoryName || 'Тимчасова'})` : '';
@@ -185,7 +186,8 @@ async function deleteEventFromServer(eventId, eventHtmlElement) {
         });
 
         if (response.ok) {
-            eventHtmlElement.remove(); // Видаляємо подію з екрану (DOM), якщо сервер відповів успіхом
+            const elementsToRemove = document.querySelectorAll(`[data-event-id="${eventId}"]`);
+            elementsToRemove.forEach(el => el.remove());
         } else {
             const errorText = await response.text();
             alert(`Помилка видалення: ${errorText}`);
