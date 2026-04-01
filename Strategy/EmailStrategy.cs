@@ -8,7 +8,7 @@ namespace HORIZON1.Strategy
     {
         public void SendReminder(Event eventItem, Reminder reminder)
         {
-            try 
+            try
             {
                 var smtpClient = new SmtpClient("smtp.gmail.com")
                 {

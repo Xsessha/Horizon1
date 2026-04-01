@@ -79,6 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar();
     });
+    document.getElementById('recurrencePattern').addEventListener('change', (ev) => {
+        const pattern = parseInt(ev.target.value);
+        document.getElementById('recurrenceEndDateWrapper').style.display = (pattern !== 0 && pattern !== 4) ? 'block' : 'none';
+    });
 
     window.logout = function() {
         localStorage.removeItem('userId');
@@ -259,6 +263,8 @@ function openModal(day) {
     document.getElementById('customCategoryColor').value = '#ff9900';
 
     document.getElementById('eventModal').style.display = 'block';
+    document.getElementById('recurrenceEndDateWrapper').style.display = 'none';
+    document.getElementById('recurrenceEndDate').value = '';
 }
 
 function closeModal() {
@@ -296,6 +302,9 @@ async function createEvent(e) {
         return;
     }
 
+    const recurrencePatternValue = parseInt(document.getElementById('recurrencePattern').value);
+    const recurrenceEndDateValue = document.getElementById('recurrenceEndDate').value;
+
     const eventData = {
         title: document.getElementById('eventTitle').value,
         description: document.getElementById('eventDesc').value,
@@ -305,7 +314,8 @@ async function createEvent(e) {
         temporaryCategoryName: isOtherCategory ? customCategoryName : null,
         temporaryCategoryColor: isOtherCategory ? document.getElementById('customCategoryColor').value : null,
         categoryId: isOtherCategory ? null : parseInt(selectedCategory),
-        recurrencePattern: parseInt(document.getElementById('recurrencePattern').value)
+        recurrencePattern: recurrencePatternValue,
+        recurrenceEndDate: (recurrencePatternValue !== 0 && recurrencePatternValue !== 4 && recurrenceEndDateValue) ? recurrenceEndDateValue : null
     };
 
     // ВИЗНАЧАЄМО МЕТОД ТА URL (PUT для редагування, POST для нового)
@@ -349,6 +359,16 @@ function openEditModal(eventData) {
         categorySelect.value = eventData.categoryId;
         document.getElementById('customCategoryWrapper').style.display = 'none';
     }
-
+    document.getElementById('recurrencePattern').value = eventData.recurrencePattern || '0';
+    
+    // Перевіряємо, чи є повторення і чи воно не дорівнює 4 (Щороку)
+    if (eventData.recurrencePattern && eventData.recurrencePattern !== 0 && eventData.recurrencePattern !== 4) {
+        document.getElementById('recurrenceEndDateWrapper').style.display = 'block';
+        document.getElementById('recurrenceEndDate').value = eventData.recurrenceEndDate ? eventData.recurrenceEndDate.split('T')[0] : '';
+    } else {
+        document.getElementById('recurrenceEndDateWrapper').style.display = 'none';
+        document.getElementById('recurrenceEndDate').value = '';
+    }
     document.getElementById('eventModal').style.display = 'block';
+    
 }
