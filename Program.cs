@@ -5,6 +5,7 @@ using HORIZON1.Models;
 using HORIZON1.Repository;
 using System.Net;
 using System.Net.Sockets;
+using HORIZON1.Services;
 
 static int FindAvailablePort(int start = 5000, int end = 5050)
 {
@@ -96,6 +97,7 @@ builder.Services.AddScoped<HORIZON1.Factory.ReminderFactory>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHostedService<ReminderBackgroundService>();
 
 var app = builder.Build();
 
