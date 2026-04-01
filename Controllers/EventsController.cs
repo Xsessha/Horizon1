@@ -140,40 +140,40 @@ namespace HORIZON1.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Event>> CreateEvent(Event newEvent, [FromQuery] string reminderType = "email")
+        public async Task<ActionResult<Event>> CreateEvent(Event newEvent)
         {
-            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized("Користувач не авторизований.");
-
+            // Перевірка авторизації
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+            
+            // Прив'язуємо подію до поточного користувача
             newEvent.UserId = CurrentUserId;
 
-            if (newEvent.EndTime <= newEvent.StartTime)
-                return BadRequest("Час закінчення має бути пізніше за час початку.");
-
-            if (newEvent.IsTemporaryCategory)
-            {
-                // Не зберігаємо нову категорію у БД
-                newEvent.CategoryId = null;
-                newEvent.Category = null;
-            }
-
-            newEvent.IsRecurring = newEvent.RecurrencePattern != RecurrencePattern.None;
-
+            // 1. Зберігаємо подію в базу через репозиторій
             var createdEvent = await _repository.CreateAsync(newEvent);
 
-            var reminderTime = createdEvent.StartTime.AddMinutes(-30);
-            if (reminderTime < DateTime.UtcNow)
+            // 2. Логіка нагадування (за 15 хвилин до початку)
+            // Вираховуємо час, коли має спрацювати фонова служба
+            var reminderTime = createdEvent.StartTime.AddMinutes(-15);
+            
+            // Якщо до події залишилось менше 15 хв, ставимо нагадування на "зараз + 1 хвилина"
+            // Це щоб користувач отримав сповіщення майже миттєво для термінових справ
+            if (reminderTime < DateTime.Now) 
             {
-                reminderTime = DateTime.UtcNow.AddMinutes(1);
+                reminderTime = DateTime.Now.AddMinutes(1);
             }
 
-            var strategy = _reminderFactory.CreateStrategy(reminderType);
-            strategy.SendReminder(createdEvent, new Reminder
+            // Створюємо об'єкт нагадування
+            var reminder = new Reminder
             {
-                Message = $"Нагадування: подія '{createdEvent.Title}' починається {createdEvent.StartTime:dd.MM.yyyy HH:mm}",
+                EventId = createdEvent.Id,
                 ReminderTime = reminderTime,
-                EventId = createdEvent.Id
-            });
+                Message = $"Нагадування від HORIZON: Подія '{createdEvent.Title}' розпочнеться о {createdEvent.StartTime:HH:mm}!"
+            };
 
+            // 3. ЗБЕРІГАЄМО НАГАДУВАННЯ В БАЗУ (використовуємо твій метод у репозиторії)
+            await _repository.AddReminderAsync(reminder);
+
+            // Повертаємо створену подію на фронтенд
             return Ok(createdEvent);
         }
 

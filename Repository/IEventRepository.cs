@@ -9,6 +9,7 @@ namespace HORIZON1.Repository
         Task<Event> CreateAsync(Event newEvent);
         Task<Event> UpdateAsync(Event updatedEvent);
         Task<bool> DeleteAsync(int id, string userId);
+        Task AddReminderAsync(Reminder reminder);
 
         Task<IEnumerable<Event>> GetEventsByMonthAsync(int year, int month, string userId);
         Task<IEnumerable<Event>> GetEventsByCategoryAsync(int categoryId, string userId);
