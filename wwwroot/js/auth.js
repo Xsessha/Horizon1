@@ -1,6 +1,14 @@
 const AUTH_API = '/api/auth';
 
 function showTab(type) {
+    // ДОДАНО: Очищуємо поля обох форм при перемиканні вкладок
+    document.getElementById('loginForm').reset();
+    document.getElementById('registerForm').reset();
+    
+    // ДОДАНО: Ховаємо повідомлення про помилки, якщо вони були
+    document.getElementById('loginError').classList.add('hidden');
+    document.getElementById('registerError').classList.add('hidden');
+
     const isLogin = type === 'login';
     document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
     document.getElementById('registerForm').classList.toggle('hidden', isLogin);
@@ -68,6 +76,10 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
 
         if (response.ok) {
             alert("Реєстрація успішна! Тепер увійдіть.");
+            
+            // ДОДАНО: Очищуємо форму реєстрації після успішного створення акаунту
+            document.getElementById('registerForm').reset();
+            
             showTab('login');
         } else {
             // Обробка помилок валідації (Вимога №10)
