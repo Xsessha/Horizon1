@@ -5,6 +5,7 @@ using HORIZON1.Models;
 using HORIZON1.Repository;
 using HORIZON1.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace HORIZON1.Controllers
 {
@@ -35,7 +36,7 @@ namespace HORIZON1.Controllers
             // 1. Створюємо подію
             var createdEvent = await _repository.CreateAsync(newEvent);
 
-            // 2. Логіка нагадування за 15 хв (з використанням DateTime.Now)
+            // 2. Логіка нагадування за 15 хв
             var reminderTime = createdEvent.StartTime.AddMinutes(-15);
             if (reminderTime < DateTime.Now) 
             {
@@ -77,7 +78,6 @@ namespace HORIZON1.Controllers
                 var currentStart = ev.StartTime;
                 var currentEnd = ev.EndTime;
 
-                // Перевірка наявності RecurrenceEndDate після оновлення моделі
                 if (ev.RecurrenceEndDate.HasValue && ev.RecurrenceEndDate.Value < monthStart) continue;
 
                 while (currentStart < monthStart)
@@ -100,6 +100,61 @@ namespace HORIZON1.Controllers
                 }
             }
             return Ok(results.OrderBy(e => e.StartTime));
+        }
+
+        // --- НОВІ МЕТОДИ: ВИДАЛЕННЯ ТА РЕДАГУВАННЯ ---
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEvent(int id)
+        {
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+
+            // Знаходимо подію саме цього користувача
+            var ev = await _context.Events
+                .FirstOrDefaultAsync(e => e.Id == id && e.UserId == CurrentUserId);
+
+            if (ev == null) return NotFound("Подію не знайдено");
+
+            // Видаляємо нагадування, щоб не було помилок Foreign Key в SQLite
+            var reminders = _context.Reminders.Where(r => r.EventId == id);
+            _context.Reminders.RemoveRange(reminders);
+
+            _context.Events.Remove(ev);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEvent(int id, Event updatedEvent)
+        {
+            if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
+
+            var existingEvent = await _context.Events
+                .FirstOrDefaultAsync(e => e.Id == id && e.UserId == CurrentUserId);
+
+            if (existingEvent == null) return NotFound("Подію не знайдено");
+
+            // Оновлюємо основні поля
+            existingEvent.Title = updatedEvent.Title;
+            existingEvent.Description = updatedEvent.Description;
+            existingEvent.StartTime = updatedEvent.StartTime;
+            existingEvent.EndTime = updatedEvent.EndTime;
+            existingEvent.CategoryId = updatedEvent.CategoryId;
+            existingEvent.RecurrencePattern = updatedEvent.RecurrencePattern;
+            existingEvent.RecurrenceEndDate = updatedEvent.RecurrenceEndDate;
+            existingEvent.IsRecurring = updatedEvent.RecurrencePattern != RecurrencePattern.None;
+
+            // Оновлюємо нагадування, якщо воно існує
+            var reminder = await _context.Reminders.FirstOrDefaultAsync(r => r.EventId == id);
+            if (reminder != null)
+            {
+                reminder.ReminderTime = existingEvent.StartTime.AddMinutes(-15);
+                reminder.Message = $"🔔 Оновлене нагадування: '{existingEvent.Title}' почнеться о {existingEvent.StartTime:HH:mm}!";
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(existingEvent);
         }
 
         private DateTime MoveNext(DateTime date, RecurrencePattern pattern) => pattern switch
