@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/qqyeDfv7IaiukIlTTl7anNzLH53OZuajEI9y7VZWIY=",
+  "Hash": "BQtDkVAbY/YFC1l90uOSY8b/e4ZgD0FZGuWXX4ODBQg=",
   "Source": "HORIZON1",
   "BasePath": "_content/HORIZON1",
   "Mode": "Default",
@@ -73,8 +73,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "yqvkiebg0l",
-      "Integrity": "RihBtfsEGeuhWGOerEIjqtzH7SvLsQO4y58aQI1uW6A=",
+      "Fingerprint": "62b467q4qt",
+      "Integrity": "/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\app.js"
@@ -94,8 +94,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "k4vinwv2b5",
-      "Integrity": "7CoCe3EYCzbMDZ1Wl4/5dPKrLCjTEY0PUUiESbxK9vY=",
+      "Fingerprint": "ek9z0ti7n0",
+      "Integrity": "0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\auth.js"
@@ -167,7 +167,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 12:23:43 GMT"
+          "Value": "Wed, 01 Apr 2026 15:10:07 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -204,7 +204,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 12:23:43 GMT"
+          "Value": "Wed, 01 Apr 2026 15:10:07 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -249,7 +249,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 12:23:43 GMT"
+          "Value": "Wed, 01 Apr 2026 15:12:56 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -286,7 +286,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 12:23:43 GMT"
+          "Value": "Wed, 01 Apr 2026 15:12:56 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -309,6 +309,51 @@
       ]
     },
     {
+      "Route": "js/app.62b467q4qt.js",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\app.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11193"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 01 Apr 2026 15:12:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "62b467q4qt"
+        },
+        {
+          "Name": "label",
+          "Value": "js/app.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38="
+        }
+      ]
+    },
+    {
       "Route": "js/app.js",
       "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\app.js",
       "Selectors": [],
@@ -319,7 +364,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11146"
+          "Value": "11193"
         },
         {
           "Name": "Content-Type",
@@ -327,11 +372,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"RihBtfsEGeuhWGOerEIjqtzH7SvLsQO4y58aQI1uW6A=\""
+          "Value": "\"/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 12:23:43 GMT"
+          "Value": "Wed, 01 Apr 2026 15:12:27 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -341,13 +386,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-RihBtfsEGeuhWGOerEIjqtzH7SvLsQO4y58aQI1uW6A="
+          "Value": "sha256-/vKlybLVCzloR5faxI5TeNH4oh7wQCkM9A7xD4pV+38="
         }
       ]
     },
     {
-      "Route": "js/app.yqvkiebg0l.js",
-      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\app.js",
+      "Route": "js/auth.ek9z0ti7n0.js",
+      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\auth.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -356,7 +401,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11146"
+          "Value": "3784"
         },
         {
           "Name": "Content-Type",
@@ -364,11 +409,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"RihBtfsEGeuhWGOerEIjqtzH7SvLsQO4y58aQI1uW6A=\""
+          "Value": "\"0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 01 Apr 2026 12:23:43 GMT"
+          "Value": "Wed, 01 Apr 2026 15:12:42 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -378,15 +423,15 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "yqvkiebg0l"
+          "Value": "ek9z0ti7n0"
         },
         {
           "Name": "label",
-          "Value": "js/app.js"
+          "Value": "js/auth.js"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-RihBtfsEGeuhWGOerEIjqtzH7SvLsQO4y58aQI1uW6A="
+          "Value": "sha256-0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas="
         }
       ]
     },
@@ -401,7 +446,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "3076"
+          "Value": "3784"
         },
         {
           "Name": "Content-Type",
@@ -409,11 +454,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"7CoCe3EYCzbMDZ1Wl4/5dPKrLCjTEY0PUUiESbxK9vY=\""
+          "Value": "\"0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Mar 2026 14:27:53 GMT"
+          "Value": "Wed, 01 Apr 2026 15:12:42 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -423,52 +468,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-7CoCe3EYCzbMDZ1Wl4/5dPKrLCjTEY0PUUiESbxK9vY="
-        }
-      ]
-    },
-    {
-      "Route": "js/auth.k4vinwv2b5.js",
-      "AssetFile": "C:\\Users\\Lenovo Yoga\\OneDrive\\Desktop\\Horizon1\\wwwroot\\js\\auth.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3076"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"7CoCe3EYCzbMDZ1Wl4/5dPKrLCjTEY0PUUiESbxK9vY=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 30 Mar 2026 14:27:53 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "k4vinwv2b5"
-        },
-        {
-          "Name": "label",
-          "Value": "js/auth.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-7CoCe3EYCzbMDZ1Wl4/5dPKrLCjTEY0PUUiESbxK9vY="
+          "Value": "sha256-0nAInZTHqMS7y/SUFrPlMMl3PPRLVFKDaFexIn0vVas="
         }
       ]
     },
@@ -495,7 +495,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Mar 2026 14:27:53 GMT"
+          "Value": "Wed, 01 Apr 2026 15:13:11 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -540,7 +540,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Mar 2026 14:27:53 GMT"
+          "Value": "Wed, 01 Apr 2026 15:13:11 GMT"
         },
         {
           "Name": "Cache-Control",

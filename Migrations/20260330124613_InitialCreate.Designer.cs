@@ -3,6 +3,7 @@ using System;
 using HORIZON1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HORIZON1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260330124613_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -49,24 +52,6 @@ namespace HORIZON1.Migrations
                             Id = 2,
                             ColorHex = "#33FF57",
                             Name = "Навчання"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ColorHex = "#3357FF",
-                            Name = "Спорт"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ColorHex = "#F1C40F",
-                            Name = "Особисте"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ColorHex = "#9B59B6",
-                            Name = "Здоров'я"
                         });
                 });
 
@@ -76,7 +61,10 @@ namespace HORIZON1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CategoryId1")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
@@ -91,25 +79,7 @@ namespace HORIZON1.Migrations
                     b.Property<bool>("IsRecurring")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsTemporaryCategory")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RecurrenceDays")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("RecurrencePattern")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TemporaryCategoryColor")
-                        .HasMaxLength(7)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TemporaryCategoryName")
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -124,6 +94,8 @@ namespace HORIZON1.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CategoryId1");
 
                     b.HasIndex("UserId");
 
@@ -355,9 +327,14 @@ namespace HORIZON1.Migrations
             modelBuilder.Entity("HORIZON1.Models.Event", b =>
                 {
                     b.HasOne("HORIZON1.Models.Category", "Category")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HORIZON1.Models.Category", null)
+                        .WithMany("Events")
+                        .HasForeignKey("CategoryId1");
 
                     b.HasOne("HORIZON1.Models.User", "User")
                         .WithMany()

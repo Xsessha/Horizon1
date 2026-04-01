@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HORIZON1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260401122832_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260330210628_FixCategoryRelation")]
+    partial class FixCategoryRelation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,18 +142,12 @@ namespace HORIZON1.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsSent")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ReminderTime")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

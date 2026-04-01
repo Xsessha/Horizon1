@@ -3,6 +3,7 @@ using System;
 using HORIZON1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HORIZON1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260330210519_UpgradeEventFeatures")]
+    partial class UpgradeEventFeatures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -79,6 +82,9 @@ namespace HORIZON1.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("CategoryId1")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -124,6 +130,8 @@ namespace HORIZON1.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CategoryId1");
 
                     b.HasIndex("UserId");
 
@@ -355,9 +363,13 @@ namespace HORIZON1.Migrations
             modelBuilder.Entity("HORIZON1.Models.Event", b =>
                 {
                     b.HasOne("HORIZON1.Models.Category", "Category")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("HORIZON1.Models.Category", null)
+                        .WithMany("Events")
+                        .HasForeignKey("CategoryId1");
 
                     b.HasOne("HORIZON1.Models.User", "User")
                         .WithMany()

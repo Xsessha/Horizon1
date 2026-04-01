@@ -187,12 +187,8 @@ namespace HORIZON1.Migrations
                     IsRecurring = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    CategoryId = table.Column<int>(type: "INTEGER", nullable: true),
-                    IsTemporaryCategory = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TemporaryCategoryName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    TemporaryCategoryColor = table.Column<string>(type: "TEXT", maxLength: 7, nullable: true),
-                    RecurrencePattern = table.Column<int>(type: "INTEGER", nullable: false),
-                    RecurrenceDays = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true)
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CategoryId1 = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -208,7 +204,12 @@ namespace HORIZON1.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Events_Categories_CategoryId1",
+                        column: x => x.CategoryId1,
+                        principalTable: "Categories",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -219,8 +220,6 @@ namespace HORIZON1.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Message = table.Column<string>(type: "TEXT", nullable: false),
                     ReminderTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsSent = table.Column<bool>(type: "INTEGER", nullable: false),
                     EventId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -240,10 +239,7 @@ namespace HORIZON1.Migrations
                 values: new object[,]
                 {
                     { 1, "#FF5733", "Робота" },
-                    { 2, "#33FF57", "Навчання" },
-                    { 3, "#3357FF", "Спорт" },
-                    { 4, "#F1C40F", "Особисте" },
-                    { 5, "#9B59B6", "Здоров'я" }
+                    { 2, "#33FF57", "Навчання" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -287,6 +283,11 @@ namespace HORIZON1.Migrations
                 name: "IX_Events_CategoryId",
                 table: "Events",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_CategoryId1",
+                table: "Events",
+                column: "CategoryId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_UserId",
