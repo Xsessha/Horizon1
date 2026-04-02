@@ -13,7 +13,6 @@ namespace HORIZON1.Strategy
                 var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
-                    // ВСТАВЛЯЙ СЮДИ: твоя пошта та 16-значний код без пробілів
                     Credentials = new NetworkCredential("horizon666222@gmail.com", "bjvj zbvc xkpj wvhf"), 
                     EnableSsl = true,
                 };

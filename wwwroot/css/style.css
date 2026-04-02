@@ -1,285 +1,506 @@
 :root {
     --bg-color: #fef8ff;
     --main-color: #ffffff;
-    --accent-color: #2c3e50;
-    --border-color: rgba(85, 92, 142, 0.22);
+    --accent-color: #b8c0ff;
+    --border-color: rgba(85, 92, 142, 0.15);
+    --text-color: #2b3041;
+    --shadow: 0 10px 30px rgba(112, 121, 169, 0.12);
 }
 
 body {
     font-family: 'Nunito', 'Segoe UI', sans-serif;
     margin: 0;
     background: linear-gradient(130deg, #ffe8f5 0%, #f1f9ff 45%, #e7ffe9 100%);
-    color: #2f3e4f;
+    color: var(--text-color);
+    min-height: 100vh;
 }
 
+/* --- ХЕДЕР --- */
 header {
     background: linear-gradient(135deg, #ffd2e8 0%, #f8ffd1 50%, #c8f8ff 100%);
     color: #2b3041;
-    font-family: 'Nunito', sans-serif;
     box-shadow: 0 12px 30px rgba(36, 58, 110, 0.16);
     border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-    position: relative;
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 1.5rem;
-}
-
-header::after {
-    content: '';
-    position: absolute;
-    top: -25%;
-    right: -20%;
-    width: 220px;
-    height: 220px;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.45), transparent 60%);
-    transform: translate(0, 0);
+    padding: 1.25rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 header h1 {
-    font-size: 3rem;
-    letter-spacing: 0.05em;
+    font-size: 2.8rem;
     margin: 0;
     font-weight: 800;
+    letter-spacing: -0.03em;
 }
 
-header #userInfo {
-    font-size: 1.05rem;
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+#userInfo {
+    background: rgba(255, 255, 255, 0.55);
+    padding: 0.4rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(149, 167, 204, 0.4);
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    background: rgba(255, 255, 255, 0.55);
-    color: #1f2b44;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.7rem;
-    border: 1px solid rgba(149, 167, 204, 0.42);
+    gap: 8px;
 }
 
-#userName {
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-}
-
-footer {
-    background: linear-gradient(80deg, #ffd6e8, #e6f4f7);
-    color: #2b3041;
-    padding: 10px 20px;
-    text-align: right;
-}
-
+/* --- МАКЕТ DASHBOARD --- */
 .dashboard {
     display: flex;
-    padding: 20px;
-    gap: 20px;
+    padding: 30px;
+    gap: 30px;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
 .sidebar {
-    width: 200px;
-    background: white;
-    padding: 15px;
-    border: 2px solid var(--border-color);
+    width: 250px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    padding: 25px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
 }
 
 .calendar-container {
     flex-grow: 1;
-    background: #fafaff;
-    border: 1px solid rgba(115, 123, 184, 0.35);
-    border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 10px 20px rgba(91, 109, 138, 0.12);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    border: 1px solid white;
+}
+
+/* --- КАЛЕНДАРНА СІТКА --- */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+#currentMonthYear {
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: capitalize;
+    min-width: 280px;
+    text-align: center;
+    color: #444b6e;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    grid-auto-rows: minmax(45px, auto); /* СТАЛИЙ РОЗМІР */
+    gap: 12px;
 }
 
 .day-header {
-    background: rgba(224, 233, 255, 0.75);
+    background: rgba(184, 192, 255, 0.25);
     text-align: center;
-    padding: 12px 0;
-    font-weight: 700;
-    color: #3a4671;
+    padding: 15px;
+    font-weight: 800;
     border-radius: 12px;
-    border: 1px solid rgba(147, 165, 195, 0.4);
+    color: #555c8e;
+    font-size: 0.9rem;
+    text-transform: uppercase;
 }
 
 .calendar-day {
-    min-height: 98px;
-    padding: 8px;
-    border-radius: 12px;
-    background: #fdfbff;
-    border: 1px solid rgba(173, 182, 215, 0.24);
-    box-shadow: 0 4px 12px rgba(112, 121, 169, 0.08);
-    cursor: pointer;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 12px;
+    border: 1px solid rgba(184, 192, 255, 0.1);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 130px;
 }
 
 .calendar-day:hover {
-    transform: translateY(-1.5px);
-    box-shadow: 0 8px 18px rgba(103, 110, 159, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+    background: #fff;
 }
-
-
-.calendar-day:hover { background: #fafafa; }
-
-.calendar-day.empty { background: #f8f8f8; cursor: default; border: none; }
 
 .calendar-day.other-month {
-    background-color: #f9f9f9;
-    color: #ccc;
-    opacity: 0.7;
+    background: rgba(240, 240, 240, 0.3);
+    opacity: 0.5;
 }
 
-.calendar-day.other-month .event-item {
-    opacity: 0.5; 
-    filter: grayscale(30%);
-    pointer-events: none; 
+.day-number {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #888fb1;
 }
 
-.calendar-day.other-month:hover {
-    cursor: default;
-    transform: none;
-}
+/* --- ПОДІЇ --- */
 .event-item {
-    font-size: 0.8rem;
-    padding: 3px;
-    margin-bottom: 2px;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border-radius: 10px;
     color: white;
-    border-radius: 0; /* Flat style */
+    font-weight: 700;
+    cursor: pointer;
     position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
 }
 
+.event-item:hover {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+}
 
 .delete-event-btn {
     position: absolute;
-    top: 2px;
-    right: 5px;
-    color: white;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    opacity: 0; 
-    transition: opacity 0.2s ease-in-out;
-    line-height: 1;
+    right: 6px;
+    top: 3px;
+    font-size: 16px;
+    opacity: 0;
+    transition: 0.2s;
 }
-
 
 .event-item:hover .delete-event-btn {
     opacity: 1;
 }
 
-
-.delete-event-btn:hover {
-    color: #ff4d4d;
+/* --- МОДАЛЬНЕ ВІКНО (ВИПРАВЛЕННЯ КНОПКИ) --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(43, 48, 65, 0.45);
+    backdrop-filter: blur(6px);
 }
 
-/* Modal */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-.modal-content { 
-    background: white; width: 400px; margin: 10% auto; padding: 20px; 
-    border: 3px solid var(--border-color);
+.modal-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 480px;
+    margin: 4vh auto;
+    padding: 35px;
+    border-radius: 30px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.2);
+    
+    /* ФІКС: Кнопка "Зберегти" тепер завжди доступна завдяки скролу */
+    max-height: 88vh; 
+    overflow-y: auto; 
+    position: relative;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-weight: 800;
+    color: #2b3041;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
 }
 
 input, textarea, select {
-    width: 100%; margin-bottom: 10px; padding: 8px;
-    border: 2px solid var(--border-color);
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 2px solid #f2f3f8;
+    border-radius: 15px;
+    font-family: inherit;
     box-sizing: border-box;
+    font-size: 1rem;
+    transition: all 0.3s;
 }
 
-/* Стилі для сайдбара */
-.sidebar {
-    padding: 20px;
-    background-color: #fcfcfc;
-    border-right: 1px solid #eee;
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: #fbfbff;
 }
 
-.category-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 15px;
+/* КНОПКА ЗБЕРЕГТИ */
+button[type="submit"] {
+    background: linear-gradient(135deg, #b8c0ff, #fabdff);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(184, 192, 255, 0.4);
+    transition: 0.3s ease;
+    margin-top: 10px;
 }
 
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(184, 192, 255, 0.6);
+    filter: brightness(1.05);
+}
+
+/* КАТЕГОРІЇ В САЙДБАРІ */
 .category-item {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
-    background: white;
-    border: 1px solid #f0f0f0;
-    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 15px;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: 0.3s;
+    border: 1px solid transparent;
 }
 
 .category-item:hover {
-    background: #f8f9fa;
-    border-color: #e0e0e0;
-    transform: translateX(5px);
+    background: white;
+    transform: translateX(8px);
+    border-color: var(--accent-color);
 }
 
 .category-marker {
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
-    margin-right: 12px;
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    margin-right: 15px;
 }
 
-.category-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #444;
-}
-
-.calendar-header {
+/* ТЕЛЕГРАМ КНОПКА */
+.btn-telegram-header {
+    background: rgba(255, 255, 255, 0.65);
+    color: #1f2b44;
+    padding: 0.7rem 1.4rem;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 800;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 20px; 
-    margin-bottom: 25px;
-    font-family: 'Segoe UI', sans-serif;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: 0.3s;
 }
 
-#currentMonthYear {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin: 0;
-    min-width: 200px; 
-    text-align: center;
-    text-transform: capitalize;
+.btn-telegram-header:hover {
+    background: white;
+    transform: translateY(-2px);
 }
 
+/* Кнопки навігації календаря */
 .btn-cal-nav {
-    background-color: #ffffff; 
-    color: #7f8c8d;
-    border: 1px solid #f0f0f0; 
-    border-radius: 50%; 
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
+    background: white;
+    border: 1px solid #eee;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease-in-out; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
+    font-weight: 800;
+    transition: 0.3s;
 }
 
 .btn-cal-nav:hover {
-    background-color: #f8f9fa;
-    color: #2c3e50; 
-    border-color: #e0e0e0;
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
+    background: var(--accent-color);
+    color: white;
 }
 
-
-.btn-cal-nav:active {
-    transform: scale(0.95); 
-    background-color: #f1f1f1;
+/* Кастомний скролбар для модалки */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
 }
+.modal-content::-webkit-scrollbar-thumb {
+    background: #e2e4f0;
+    border-radius: 10px;
+}
+
+/* Контейнер для кнопок */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+}
+
+/* Самі світлі плашки (як на твоєму малюнку) */
+.action-badge {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7); /* Напівпрозорий білий фон */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Дуже м'яка біла рамочка */
+    border-radius: 10px; /* М'які кути, але НЕ овал */
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057; /* Темно-сірий текст */
+    text-decoration: none;
+    gap: 8px; /* Відстань між іконкою/кнопкою і текстом */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Кнопка "Вихід" з чіткою рамкою, як на скріншоті */
+.logout-btn-classic {
+    background-color: #f1f3f5; /* Світло-сірий фон кнопки */
+    border: 1px solid #343a40; /* Чітка темна рамка! */
+    border-radius: 4px; /* Майже прямі кути */
+    padding: 2px 6px;
+    font-size: 12px;
+    color: #212529;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.logout-btn-classic:hover {
+    background-color: #e2e6ea;
+}
+
+/* --- ПЛАНИ НА ДЕНЬ --- */
+.daily-schedule-container {
+    margin-top: 35px; /* Відступ від категорій */
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0; /* Тонка лінія, що відділяє розклад від категорій */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Дозволяє блоку зайняти весь вільний простір знизу */
+    overflow: hidden; /* Важливо, щоб список подій не вилазив за межі панелі */
+}
+
+.daily-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.daily-divider {
+    border: none;
+    height: 1px;
+    background-color: #e2e8f0;
+    margin: 0 0 15px 0;
+}
+
+.daily-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto; /* Додаємо скрол, якщо подій багато */
+    max-height: 400px;
+    padding-right: 5px;
+}
+
+/* Вигляд самої події у списку */
+.daily-event-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #f8fafc; /* Дуже світлий фон */
+    transition: background-color 0.2s;
+}
+
+.daily-event-item:hover {
+    background-color: #f1f5f9;
+}
+
+/* Кольоровий кружечок категорії */
+.event-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.event-time {
+    font-size: 0.8rem;
+    color: #718096;
+    font-weight: 500;
+}
+
+.event-title {
+    font-size: 0.95rem;
+    color: #1a202c;
+    font-weight: 500;
+}
+
+.event-category-name {
+    font-size: 0.75rem;
+    color: #a0aec0;
+}
+
+.no-events-msg {
+    font-size: 0.9rem;
+    color: #a0aec0;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Контейнер для іконок дій */
+.event-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto; /* Притискає кнопки до правого краю */
+    opacity: 0; /* Спочатку вони невидимі */
+    transition: opacity 0.2s ease;
+}
+
+/* Показуємо кнопки при наведенні на елемент події */
+.daily-event-item:hover .event-actions {
+    opacity: 1;
+}
+
+/* Стилі для самих кнопок-іконок */
+.action-icon {
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Колір при наведенні на "олівчик" */
+.edit-icon:hover {
+    background-color: #e2e8f0;
+    color: #3182ce;
+}
+
+/* Колір при наведенні на "хрестик" */
+.delete-icon:hover {
+    background-color: #fee2e2;
+    color: #e53e3e;
+}
+
+/* Щоб іконки не злипалися з текстом, додамо налаштування для айтема */
+.daily-event-item {
+    position: relative;
+    display: flex;
+    align-items: center; /* Центруємо вміст по вертикалі */
+    justify-content: space-between; /* Розносимо текст і кнопки по краях */
+}
+

@@ -21,7 +21,7 @@ namespace HORIZON1.Models
         public DateTime EndTime { get; set; }
 
         public bool IsRecurring { get; set; }
-        
+
         public bool IsDeleted { get; set; } = false;
 
         [ValidateNever]
@@ -40,7 +40,7 @@ namespace HORIZON1.Models
         public RecurrencePattern RecurrencePattern { get; set; } = RecurrencePattern.None;
         public DateTime? RecurrenceEndDate { get; set; }
         [StringLength(50)]
-        public string? RecurrenceDays { get; set; } // CSV, наприклад "Monday,Wednesday"
+        public string? RecurrenceDays { get; set; }
 
         [ValidateNever]
         public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();

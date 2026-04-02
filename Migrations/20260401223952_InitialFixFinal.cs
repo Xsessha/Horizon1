@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HORIZON1.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialFixFinal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,7 @@ namespace HORIZON1.Migrations
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     FullName = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    TelegramChatId = table.Column<long>(type: "INTEGER", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -187,8 +188,13 @@ namespace HORIZON1.Migrations
                     IsRecurring = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CategoryId1 = table.Column<int>(type: "INTEGER", nullable: true)
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsTemporaryCategory = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TemporaryCategoryName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    TemporaryCategoryColor = table.Column<string>(type: "TEXT", maxLength: 7, nullable: true),
+                    RecurrencePattern = table.Column<int>(type: "INTEGER", nullable: false),
+                    RecurrenceEndDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RecurrenceDays = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -204,12 +210,7 @@ namespace HORIZON1.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Events_Categories_CategoryId1",
-                        column: x => x.CategoryId1,
-                        principalTable: "Categories",
-                        principalColumn: "Id");
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -239,7 +240,10 @@ namespace HORIZON1.Migrations
                 values: new object[,]
                 {
                     { 1, "#FF5733", "Робота" },
-                    { 2, "#33FF57", "Навчання" }
+                    { 2, "#33FF57", "Навчання" },
+                    { 3, "#3357FF", "Спорт" },
+                    { 4, "#F1C40F", "Особисте" },
+                    { 5, "#9B59B6", "Здоров'я" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -283,11 +287,6 @@ namespace HORIZON1.Migrations
                 name: "IX_Events_CategoryId",
                 table: "Events",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Events_CategoryId1",
-                table: "Events",
-                column: "CategoryId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_UserId",
