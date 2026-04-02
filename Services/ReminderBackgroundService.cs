@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HORIZON1.Services
 {
+    // BackgroundService — це спеціальний клас в ASP.NET Core для створення завдань, 
+    // що працюють у фоновому режимі (Worker Service).
     public class ReminderBackgroundService : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<ReminderBackgroundService> _logger;
+        private readonly ILogger<ReminderBackgroundService> _logger; // Для запису подій у консоль
 
         public ReminderBackgroundService(IServiceProvider services, ILogger<ReminderBackgroundService> logger)
         {
@@ -15,12 +17,16 @@ namespace HORIZON1.Services
             _logger = logger;
         }
 
+        // Основний метод, який запускається автоматично при старті сервера
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Служба нагадувань запущена.");
 
+            // Нескінченний цикл, поки сервер працює (stoppingToken відстежує зупинку сервера)
             while (!stoppingToken.IsCancellationRequested)
             {
+                // Створюємо Scope, бо DbContext — це Scoped-сервіс, і ми не можемо 
+                // звернутися до нього напряму з фонової служби, яка живе довго.
                 using (var scope = _services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -28,15 +34,16 @@ namespace HORIZON1.Services
 
                     var now = DateTime.Now;
 
-                    // Шукаємо нагадування, час яких настав
+                    // КРОК 1: Шукаємо в базі нагадування, час яких менше або дорівнює поточному
                     var pendingReminders = await context.Reminders
-                        .Include(r => r.Event)
-                        .ThenInclude(e => e.User)
+                        .Include(r => r.Event) // Підтягуємо дані про саму подію
+                        .ThenInclude(e => e.User) // Підтягуємо дані про користувача (щоб знати Email)
                         .Where(r => r.ReminderTime <= now)
                         .ToListAsync();
 
                     _logger.LogInformation($"Перевірка... Знайдено нагадувань: {pendingReminders.Count}");
 
+                    // КРОК 2: Обробляємо кожне знайдене нагадування
                     foreach (var reminder in pendingReminders)
                     {
                         try 
@@ -44,9 +51,11 @@ namespace HORIZON1.Services
                             // Додаємо перевірку: якщо події немає, пропускаємо це нагадування
                             if (reminder.Event == null) continue;
 
+                            // Використовуємо ФАБРИКУ для створення стратегії (наприклад, Email)
                             var strategy = factory.CreateStrategy("email"); 
                             strategy.SendReminder(reminder.Event, reminder);
 
+                            // КРОК 3: Після відправки видаляємо нагадування, щоб не слати його двічі
                             context.Reminders.Remove(reminder);
                         }
                         catch (Exception ex)
@@ -55,13 +64,14 @@ namespace HORIZON1.Services
                         }
                     }
 
+                    // Зберігаємо зміни в БД (видалення відпрацьованих нагадувань)
                     if (pendingReminders.Any())
                     {
                         await context.SaveChangesAsync();
                     }
                 }
 
-                // Перевірка кожну хвилину
+                // КРОК 4: Засинаємо на 1 хвилину, щоб не перевантажувати процесор постійними запитами
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }

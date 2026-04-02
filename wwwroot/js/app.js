@@ -1,12 +1,16 @@
+// Константи для шляхів до API (твої контролери на бекенді)
 const API_URL = '/api/events';
 const CATEGORY_API_URL = '/api/categories';
-let currentDate = new Date();
+let currentDate = new Date(); // Змінна, що зберігає поточний обраний місяць
 
+// Функція для додавання токена авторизації в заголовки запитів
 function getAuthHeaders() {
     const token = localStorage.getItem('token');
+    // Якщо токен є — додаємо його в заголовок Authorization (Bearer токен)
     return token ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } : { 'Content-Type': 'application/json' };
 }
 
+// ЗАВАНТАЖЕННЯ КАТЕГОРІЙ З БАЗИ
 async function loadCategories() {
     try {
         const response = await fetch('/api/categories', {
@@ -16,8 +20,8 @@ async function loadCategories() {
         if (!response.ok) return;
 
         const categories = await response.json();
-        const categorySelect = document.getElementById('categoryId');
-        const categoryList = document.getElementById('categoryList');
+        const categorySelect = document.getElementById('categoryId'); // Випадаючий список у формі
+        const categoryList = document.getElementById('categoryList'); // Список у сайдбарі
 
         if (!categoryList || !categorySelect) return;
 
@@ -45,7 +49,7 @@ async function loadCategories() {
             categoryList.appendChild(div);
         });
 
-        // Додаємо опцію "Інша" в кінець списку
+        // Додаємо варіант "Інша" для створення власної категорії
         const otherOpt = document.createElement('option');
         otherOpt.value = 'other';
         otherOpt.textContent = 'Інша';
@@ -56,16 +60,18 @@ async function loadCategories() {
     }
 }
 
-// Виклик функції при старті
+// ГОЛОВНИЙ ОБРОБНИК ЗАВАНТАЖЕННЯ СТОРІНКИ
 document.addEventListener('DOMContentLoaded', loadCategories);
 
 document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
-    loadCategories();
-    renderCalendar();
+    checkAuth();       // Перевірка, чи залогінений юзер
+    loadCategories();  // Завантаження списку категорій
+    renderCalendar();  // Малювання календаря
 
+    // Обробка відправки форми (створення або редагування)
     document.getElementById('eventForm').addEventListener('submit', createEvent);
 
+    // Логіка показу/приховування полів для власної категорії
     document.getElementById('categoryId').addEventListener('change', (ev) => {
         const isOther = ev.target.value === 'other';
         document.getElementById('customCategoryWrapper').style.display = isOther ? 'block' : 'none';
@@ -75,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
     });
+
     document.getElementById('nextMonth').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar();
@@ -92,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ПЕРЕВІРКА АВТОРИЗАЦІЇ (чи є дані в браузері)
 function checkAuth() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
@@ -106,15 +114,18 @@ function checkAuth() {
     }
 }
 
+// МАЛЮВАННЯ КАЛЕНДАРНОЇ СІТКИ
 async function renderCalendar() {
     const grid = document.getElementById('calendarGrid');
     const monthYearLabel = document.getElementById('currentMonthYear');
     const headers = grid.querySelectorAll('.day-header');
-    grid.innerHTML = '';
-    headers.forEach(h => grid.appendChild(h));
+    grid.innerHTML = ''; // Очищаємо старі дні
+    headers.forEach(h => grid.appendChild(h)); // Повертаємо заголовки Пн, Вт...
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
+    
+    // Форматуємо назву місяця (напр. "Квітень 2026")
     monthYearLabel.innerText = `${new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(currentDate)}`;
 
     let events = [];
@@ -135,7 +146,8 @@ async function renderCalendar() {
     } catch (error) {
         console.error('Помилка завантаження подій:', error);
     }
-
+    
+    // Розрахунок днів для заповнення сітки (42 комірки)
     const startDate = new Date(year, month, 1);
     const dayOfWeek = (startDate.getDay() + 6) % 7; // 0=Пн
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -163,15 +175,18 @@ async function renderCalendar() {
     }
 }
 
+// СТВОРЕННЯ КВАДРАТИКА ДНЯ В КАЛЕНДАРІ
 function createDaySquare(grid, day, date, isOtherMonth, events) {
     const daySquare = document.createElement('div');
     daySquare.className = isOtherMonth ? 'calendar-day other-month' : 'calendar-day';
     daySquare.innerHTML = `<span>${day}</span>`;
     
+    // Клік на порожнє місце дня — відкрити модалку створення
     if (!isOtherMonth) {
         daySquare.onclick = () => openModal(day);
     }
 
+    // Фільтруємо події, що випадають на цей конкретний день
     const dayEvents = events.filter(e => {
         const start = new Date(e.startTime);
         const end = e.endTime ? new Date(e.endTime) : new Date(start);
@@ -180,6 +195,7 @@ function createDaySquare(grid, day, date, isOtherMonth, events) {
         return date >= eventStartDate && date <= eventEndDate;
     });
 
+    // Малюємо "плашки" подій всередині дня
     dayEvents.forEach(e => {
         const evEl = document.createElement('div');
         evEl.className = 'event-item';
@@ -241,19 +257,24 @@ function formatLocalDateTime(date) {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+// ВІДКРИТТЯ МОДАЛКИ ДЛЯ НОВОЇ ПОДІЇ
 function openModal(day) {
+    // 1. Формуємо повну дату на основі поточного року/місяця та обраного дня
     const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     const startTimeInput = document.getElementById('startTime');
     const endTimeInput = document.getElementById('endTime');
 
+    // 2. Встановлюємо значення за замовчуванням: початок о 09:00, кінець о 10:00
     const startDateTime = new Date(selectedDate);
     startDateTime.setHours(9, 0, 0, 0);
     const endDateTime = new Date(startDateTime);
     endDateTime.setHours(10, 0, 0, 0);
 
+    // Переводимо об'єкти дати у формат YYYY-MM-DDThh:mm для інпутів
     startTimeInput.value = formatLocalDateTime(startDateTime);
     endTimeInput.value = formatLocalDateTime(endDateTime);
 
+    // 3. ОЧИЩЕННЯ ФОРМИ: Скидаємо всі поля до початкового стану (на випадок попереднього редагування)
     document.getElementById('eventTitle').value = '';
     document.getElementById('eventDesc').value = '';
     document.getElementById('recurrencePattern').value = '0';
@@ -262,20 +283,24 @@ function openModal(day) {
     document.getElementById('customCategoryName').value = '';
     document.getElementById('customCategoryColor').value = '#ff9900';
 
+    // 4. Показуємо модалку на екрані
     document.getElementById('eventModal').style.display = 'block';
     document.getElementById('recurrenceEndDateWrapper').style.display = 'none';
     document.getElementById('recurrenceEndDate').value = '';
 }
 
+// ФУНКЦІЯ ЗАКРИТТЯ МОДАЛКИ
 function closeModal() {
     document.getElementById('eventModal').style.display = 'none';
-    document.getElementById('eventForm').reset();
+    document.getElementById('eventForm').reset(); // Скидаємо всі значення полів форми
     
-    // ВАЖЛИВО: Очищаємо ID редагування та повертаємо заголовок
+    // ВАЖЛИВО: Очищаємо ID редагування та повертаємо стандартний заголовок,
+    // щоб наступний раз відкрилася форма саме для НОВОЇ події, а не старої.
     document.getElementById('editEventId').value = "";
     document.getElementById('modalTitle').innerText = "Нова подія";
 }
 
+// ГОЛОВНА ФУНКЦІЯ: Збереження події (створення або оновлення)
 async function createEvent(e) {
     e.preventDefault();
     
@@ -302,9 +327,11 @@ async function createEvent(e) {
         return;
     }
 
+    // ЛОГІКА ПОВТОРЕНЬ
     const recurrencePatternValue = parseInt(document.getElementById('recurrencePattern').value);
     const recurrenceEndDateValue = document.getElementById('recurrenceEndDate').value;
 
+    // ФОРМУЄМО ОБ'ЄКТ ДАНИХ ДЛЯ ВІДПРАВКИ НА СЕРВЕР (JSON)
     const eventData = {
         title: document.getElementById('eventTitle').value,
         description: document.getElementById('eventDesc').value,

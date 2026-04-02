@@ -7,13 +7,13 @@ using HORIZON1.Factory;
 
 namespace HORIZON1.Controllers
 {
-    [Authorize]
+    [Authorize] // Тільки авторизовані користувачі мають доступ до своїх подій
     [Route("api/[controller]")]
     [ApiController]
     public class EventsController : ControllerBase
     {
-        private readonly IEventRepository _repository;
-        private readonly ReminderFactory _reminderFactory;
+        private readonly IEventRepository _repository; // Репозиторій для роботи з БД
+        private readonly ReminderFactory _reminderFactory; // Фабрика для створення об'єктів нагадувань
         
 
         public EventsController(IEventRepository repository, ReminderFactory reminderFactory)
@@ -22,8 +22,10 @@ namespace HORIZON1.Controllers
             _reminderFactory = reminderFactory;
         }
 
+        // Допоміжна властивість для швидкого отримання ID поточного користувача з токена
         private string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        // МЕТОД: Отримати абсолютно всі події користувача
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Event>>> GetAllEvents()
         {
@@ -33,12 +35,13 @@ namespace HORIZON1.Controllers
             return Ok(events);
         }
 
+        // МЕТОД: Отримати події для конкретного місяця (найскладніша логіка)
         [HttpGet("month/{year}/{month}")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEventsByMonth(int year, int month)
         {
             if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
 
-            // БЕРЕМО ВСІ ПОДІЇ: щоб точно захопити повторювані події, які почалися в минулих місяцях/роках
+            // 1. Завантажуємо всі події, бо повторювана подія могла початися рік тому, але діяти зараз
             var events = await _repository.GetAllAsync(CurrentUserId); 
             
             var monthStart = new DateTime(year, month, 1);
@@ -47,9 +50,10 @@ namespace HORIZON1.Controllers
 
             foreach (var ev in events)
             {
-                // 1. Якщо подія НЕ повторюється - просто перевіряємо чи вона в цьому місяці
+                // ЛОГІКА 1: Подія без повторення (одиночна)
                 if (ev.RecurrencePattern == RecurrencePattern.None)
                 {
+                    // Додаємо, якщо вона потрапляє в межі обраного місяця
                     if (ev.StartTime <= monthEnd && ev.EndTime >= monthStart)
                     {
                         results.Add(ev);
@@ -57,17 +61,17 @@ namespace HORIZON1.Controllers
                     continue;
                 }
 
-                // 2. Якщо подія ПОВТОРЮЄТЬСЯ
+                // ЛОГІКА 2: Повторювана подія (Daily, Weekly, Monthly, Yearly)
                 var currentStart = ev.StartTime;
                 var currentEnd = ev.EndTime;
 
-                // Якщо подія має кінцеву дату повторення, і ця дата БУЛА ДО початку поточного місяця - ігноруємо
+                // Якщо цикл повторень вже закінчився до початку цього місяця — ігноруємо
                 if (ev.RecurrenceEndDate.HasValue && ev.RecurrenceEndDate.Value < monthStart)
                 {
                     continue;
                 }
 
-                // "Перемотуємо" дату вперед, поки вона не дійде до поточного місяця (щоб не генерувати роки даремно)
+                // АЛГОРИТМ "ПЕРЕМОТКИ": Пропускаємо повторення, які були в минулих місяцях
                 while (currentStart < monthStart)
                 {
                     currentStart = ev.RecurrencePattern switch
@@ -88,13 +92,13 @@ namespace HORIZON1.Controllers
                     };
                 }
 
-                // ГЕНЕРУЄМО події для поточного місяця
+                // ГЕНЕРУЄМО КЛОНИ: Створюємо копії події для кожної дати повторення всередині місяця
                 while (currentStart <= monthEnd)
                 {
-                    // НАЙГОЛОВНІША ПЕРЕВІРКА: чи не вийшли ми за межі кінцевої дати повторення?
+                    // Якщо вказана дата закінчення повторень — перевіряємо її
                     if (ev.RecurrenceEndDate.HasValue && currentStart.Date > ev.RecurrenceEndDate.Value.Date)
                     {
-                        break; // Зупиняємо генерацію для цієї події!
+                        break;
                     }
 
                     if (currentEnd >= monthStart && currentStart <= monthEnd)
@@ -116,13 +120,13 @@ namespace HORIZON1.Controllers
                             TemporaryCategoryColor = ev.TemporaryCategoryColor,
                             RecurrencePattern = ev.RecurrencePattern,
                             RecurrenceDays = ev.RecurrenceDays,
-                            RecurrenceEndDate = ev.RecurrenceEndDate // Передаємо нашу нову дату
+                            RecurrenceEndDate = ev.RecurrenceEndDate 
                         };
 
                         results.Add(occurrence);
                     }
 
-                    // Крок до наступної дати
+                    // Переходимо до наступної дати згідно з патерном (день/тиждень/місяць/рік)
                     currentStart = ev.RecurrencePattern switch
                     {
                         RecurrencePattern.Daily => currentStart.AddDays(1),
@@ -142,33 +146,33 @@ namespace HORIZON1.Controllers
                 }
             }
 
+            // Повертаємо відсортовані за часом події
             return Ok(results.OrderBy(e => e.StartTime));
         }
 
+        // POST: api/Events — Створює нову подію та планує нагадування
         [HttpPost]
         public async Task<ActionResult<Event>> CreateEvent(Event newEvent)
         {
-            // Перевірка авторизації
+
             if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
             
-            // Прив'язуємо подію до поточного користувача
+            // Прив'язуємо подію до автора
             newEvent.UserId = CurrentUserId;
 
-            // 1. Зберігаємо подію в базу через репозиторій
+            // 1. Зберігаємо подію в базі
             var createdEvent = await _repository.CreateAsync(newEvent);
 
-            // 2. Логіка нагадування (за 15 хвилин до початку)
-            // Вираховуємо час, коли має спрацювати фонова служба
+            // 2. ЛОГІКА НАГАДУВАННЯ: Ставимо за 15 хвилин до початку
             var reminderTime = createdEvent.StartTime.AddMinutes(-15);
             
-            // Якщо до події залишилось менше 15 хв, ставимо нагадування на "зараз + 1 хвилина"
-            // Це щоб користувач отримав сповіщення майже миттєво для термінових справ
+            // Якщо до події вже менше 15 хв, ставимо сповіщення на "зараз + 1 хвилина"
             if (reminderTime < DateTime.Now) 
             {
                 reminderTime = DateTime.Now.AddMinutes(1);
             }
 
-            // Створюємо об'єкт нагадування
+            // 3. Формуємо об'єкт сповіщення
             var reminder = new Reminder
             {
                 EventId = createdEvent.Id,
@@ -176,24 +180,25 @@ namespace HORIZON1.Controllers
                 Message = $"Нагадування від HORIZON: Подія '{createdEvent.Title}' розпочнеться о {createdEvent.StartTime:HH:mm}!"
             };
 
-            // 3. ЗБЕРІГАЄМО НАГАДУВАННЯ В БАЗУ (використовуємо твій метод у репозиторії)
+            // 4. Додаємо в чергу нагадувань (їх обробить фоновий сервіс)
             await _repository.AddReminderAsync(reminder);
 
-            // Повертаємо створену подію на фронтенд
+            
             return Ok(createdEvent);
         }
 
+        // PUT: api/Events/{id} — Редагує існуючу подію
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event updatedEvent)
         {
             if (string.IsNullOrEmpty(CurrentUserId)) return Unauthorized();
 
-            // Перевіряємо, чи існує подія і чи належить вона поточному користувачу
+            // Перевіряємо власність: чи ця подія належить тому, хто її хоче змінити
             var existingEvent = await _repository.GetByIdAsync(id, CurrentUserId);
             if (existingEvent == null)
                 return NotFound("Подію не знайдено або у вас немає прав на її редагування.");
 
-            // Оновлюємо поля
+            // Оновлюємо основну інформацію
             existingEvent.Title = updatedEvent.Title;
             existingEvent.Description = updatedEvent.Description;
             existingEvent.StartTime = updatedEvent.StartTime;
@@ -201,7 +206,7 @@ namespace HORIZON1.Controllers
             existingEvent.RecurrencePattern = updatedEvent.RecurrencePattern;
             existingEvent.IsRecurring = updatedEvent.RecurrencePattern != RecurrencePattern.None;
             
-            // Категорії
+            // Логіка категорій (підтримка як постійних, так і тимчасових)
             existingEvent.IsTemporaryCategory = updatedEvent.IsTemporaryCategory;
             existingEvent.TemporaryCategoryName = updatedEvent.TemporaryCategoryName;
             existingEvent.TemporaryCategoryColor = updatedEvent.TemporaryCategoryColor;
@@ -212,6 +217,7 @@ namespace HORIZON1.Controllers
             return Ok(existingEvent);
         }
 
+        // DELETE: api/Events/{id} — Видаляє подію
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {

@@ -4,9 +4,10 @@ using HORIZON1.Models;
 
 namespace HORIZON1.Repository
 {
+    // КЛАС-РЕПОЗИТОРІЙ: Ізолює логіку доступу до даних від решти програми.
     public class EventRepository : IEventRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _context; // Контекст бази даних
 
         public EventRepository(AppDbContext context)
         {
