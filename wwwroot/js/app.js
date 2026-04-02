@@ -123,8 +123,10 @@ async function renderCalendar() {
         createDaySquare(grid, day, new Date(year, month, day), false, events);
     }
 
-    const totalCells = 42;
-    const currentCells = grid.children.length - 7;
+    const currentCells = grid.children.length - 7; // Рахуємо, скільки днів вже намальовано (мінус 7 днів тижня в шапці)
+    
+    const totalCells = Math.ceil(currentCells / 7) * 7; 
+    
     for (let day = 1; day <= (totalCells - currentCells); day++) {
         createDaySquare(grid, day, new Date(year, month + 1, day), true, events);
     }

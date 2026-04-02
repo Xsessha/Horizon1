@@ -129,6 +129,7 @@ header h1 {
     flex-direction: column;
     gap: 6px;
     min-height: 130px;
+    min-width: 0;
 }
 
 .calendar-day:hover {
